@@ -1,56 +1,54 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Cortex Agent
+  LSC Donor for All Data Lab -- Cortex Agent
   =============================================================================
   
-  Creates the LSC Research Agent — an AI assistant that can:
+  Creates the LSC Research Agent -- an AI assistant that can:
     1. Query structured transplant data via Cortex Analyst (Semantic View)
     2. Search unstructured clinical notes via Cortex Search
     3. Generate charts and visualizations from data
     4. Search the web for latest GVHD research
   
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │ HOW THE AGENT WORKS                                                     │
-  │                                                                        │
-  │ The Cortex Agent is an autonomous AI that:                              │
-  │                                                                        │
-  │ 1. UNDERSTANDS your question in natural language                        │
-  │ 2. DECIDES which tool(s) to use:                                       │
-  │    • Structured data question? → Cortex Analyst (Semantic View)        │
-  │    • Clinical note search? → Cortex Search                             │
-  │    • Need a chart? → Data-to-Chart                                     │
-  │    • Latest research? → Web Search                                     │
-  │    • Complex question? → Multiple tools in sequence                    │
-  │ 3. EXECUTES the tool(s) autonomously                                   │
-  │ 4. SYNTHESIZES results into a coherent answer                          │
-  │                                                                        │
-  │ KEY: The agent uses VERIFIED QUERIES from the Semantic View to         │
-  │ ensure trusted, consistent answers. This is NOT just text generation — │
-  │ it's grounded in validated SQL and real data.                           │
-  │                                                                        │
-  │ AUTONOMY: The agent chooses tools without user guidance.               │
-  │ For example: "Compare GVHD outcomes and find clinical evidence for     │
-  │ PTCy effectiveness" → Agent runs Analyst (structured) THEN Search      │
-  │ (unstructured) and combines both into one answer.                       │
-  │                                                                        │
-  │ UNLIKE TRADITIONAL BI:                                                  │
-  │ Snowflake can answer WHO, WHAT, WHERE, WHEN, WHY... and also HOW      │
-  │ and provide RECOMMENDATIONS — because it combines structured data      │
-  │ analytics with unstructured clinical intelligence and web research.    │
-  └─────────────────────────────────────────────────────────────────────────┘
+  HOW THE AGENT WORKS:
+    1. UNDERSTANDS your question in natural language
+    2. DECIDES which tool(s) to use
+    3. EXECUTES the tool(s) autonomously
+    4. SYNTHESIZES results into a coherent answer
+
+  MULTI-USER NOTE:
+    The agent is created in YOUR per-user schema and references YOUR
+    per-user semantic view and search service. Each participant has their
+    own independent agent instance.
   
   Run after: 04_cortex_search.sql, 05_semantic_view.sql
   =============================================================================*/
 
-USE ROLE MARROWCO_HOL_ROLE;
-USE WAREHOUSE MARROWCO_HOL_WH;
-USE SCHEMA MARROWCO_DONOR_LAB.HOL;
+-- ════════════════════════════════════════════════════════════════════════════
+-- SET YOUR USER NUMBER (assigned by the lab admin)
+-- ════════════════════════════════════════════════════════════════════════════
+SET USER_NUM = '01';  -- << CHANGE THIS TO YOUR ASSIGNED NUMBER (01-20)
+
+USE ROLE IDENTIFIER('MARROWCO_HOL_ROLE_' || $USER_NUM);
+USE WAREHOUSE IDENTIFIER('MARROWCO_HOL_WH_' || $USER_NUM);
+USE SCHEMA IDENTIFIER('MARROWCO_DONOR_LAB.HOL_USER_' || $USER_NUM);
+
+-- Build fully-qualified references for the agent's tool resources
+SET MY_SCHEMA = 'MARROWCO_DONOR_LAB.HOL_USER_' || $USER_NUM;
+SET MY_SEMANTIC_VIEW = $MY_SCHEMA || '.MARROWCO_TRANSPLANT_ANALYTICS';
+SET MY_SEARCH_SERVICE = $MY_SCHEMA || '.CLINICAL_NOTES_SEARCH';
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ CREATE THE AGENT                                                         ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
+-- NOTE: The agent YAML spec requires literal strings for tool_resources.
+-- We use a stored procedure to inject the per-user schema dynamically.
+
+DECLARE
+    agent_ddl VARCHAR;
+BEGIN
+    agent_ddl := '
 CREATE OR REPLACE AGENT MARROWCO_RESEARCH_AGENT
-COMMENT = 'LSC Research Agent — AI assistant for transplant outcome research with structured + unstructured intelligence'
+COMMENT = ''LSC Research Agent -- AI assistant for transplant outcome research with structured + unstructured intelligence''
 FROM SPECIFICATION $$
 orchestration:
   budget:
@@ -86,13 +84,13 @@ instructions:
 
   sample_questions:
     - question: "What is the overall GVHD rate by donor type?"
-      answer: "I'll analyze the GVHD rates across different donor types using the transplant analytics data."
+      answer: "I''ll analyze the GVHD rates across different donor types using the transplant analytics data."
     - question: "Compare survival outcomes between matched and mismatched donors"
-      answer: "I'll compare survival rates between MUD (8/8) and MMUD (7/8) donors."
+      answer: "I''ll compare survival rates between MUD (8/8) and MMUD (7/8) donors."
     - question: "What do clinical notes say about ruxolitinib treatment for severe GVHD?"
-      answer: "I'll search the clinical notes for mentions of ruxolitinib treatment and outcomes."
+      answer: "I''ll search the clinical notes for mentions of ruxolitinib treatment and outcomes."
     - question: "How does social vulnerability affect transplant success?"
-      answer: "I'll analyze transplant outcomes by Social Vulnerability Index category."
+      answer: "I''ll analyze transplant outcomes by Social Vulnerability Index category."
 
 tools:
   - tool_spec:
@@ -129,17 +127,20 @@ tools:
 
 tool_resources:
   transplant_analyst:
-    semantic_view: "MARROWCO_DONOR_LAB.HOL.MARROWCO_TRANSPLANT_ANALYTICS"
+    semantic_view: "' || $MY_SEMANTIC_VIEW || '"
   clinical_notes_search:
-    name: "MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES_SEARCH"
+    name: "' || $MY_SEARCH_SERVICE || '"
 $$
-;
+;';
+    EXECUTE IMMEDIATE agent_ddl;
+    RETURN 'Agent created with semantic_view=' || $MY_SEMANTIC_VIEW || ' and search=' || $MY_SEARCH_SERVICE;
+END;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Verify the Agent                                                         ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
-SHOW AGENTS IN SCHEMA MARROWCO_DONOR_LAB.HOL;
+SHOW AGENTS;
 
 DESCRIBE AGENT MARROWCO_RESEARCH_AGENT;
 
@@ -148,18 +149,13 @@ DESCRIBE AGENT MARROWCO_RESEARCH_AGENT;
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ You can also test via Snowflake Intelligence UI:                         ║
 -- ║   1. Go to AI & ML > Snowflake Intelligence                             ║
--- ║   2. Create a new Analyst and select MARROWCO_RESEARCH_AGENT                ║
--- ║   3. The verified queries will appear as suggested questions             ║
+-- ║   2. Click "New Analyst" (or "+" button)                                ║
+-- ║   3. Select: "Use an Agent"                                             ║
+-- ║   4. Choose: MARROWCO_RESEARCH_AGENT (in your schema)                   ║
+-- ║   5. Name it: "LSC Research Intelligence"                               ║
+-- ║   6. Click "Create"                                                      ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
--- ═══════════════════════════════════════════════════════════════════════════
--- HOW TO TEST THE AGENT
--- ═══════════════════════════════════════════════════════════════════════════
--- The agent is accessed via:
---   1. Snowflake Intelligence UI (AI & ML > Snowflake Intelligence)
---   2. The Cell Therapy Compass Streamlit app (Research Agent page)
---   3. The REST API: POST /api/v2/cortex/agent:run
---
 -- Try these questions in Snowflake Intelligence or the Streamlit app:
 --
 --   Structured: "What is the overall GVHD rate by donor type?"
@@ -167,4 +163,3 @@ DESCRIBE AGENT MARROWCO_RESEARCH_AGENT;
 --   Combined: "Compare haploidentical vs MUD survival and find clinical evidence for PTCy"
 --   Chart: "Create a bar chart comparing 1-year survival rates by donor type"
 --   Web Search: "Search for latest 2024-2025 publications on GVHD prevention with PTCy"
--- ═══════════════════════════════════════════════════════════════════════════

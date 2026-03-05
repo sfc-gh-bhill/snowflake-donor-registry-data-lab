@@ -28,7 +28,7 @@ if session:
                 ROUND(COUNT(CASE WHEN ONE_YEAR_SURVIVOR THEN 1 END) * 100.0 / COUNT(*), 1) AS ONE_YEAR_OS_PCT,
                 ROUND(AVG(GVHD_RISK_SCORE), 3) AS AVG_RISK,
                 ROUND(AVG(TIME_TO_ENGRAFTMENT_DAYS), 1) AS AVG_ENGRAFT
-            FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+            FROM DT_TRANSPLANT_ENRICHED
         """).collect()[0]
         summary_stats = {
             "total": row["TOTAL"],

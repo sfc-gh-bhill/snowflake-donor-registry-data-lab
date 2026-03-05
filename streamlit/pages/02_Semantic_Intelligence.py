@@ -213,7 +213,7 @@ if selected_query:
     if session:
         if st.button("Run This Query", type="primary"):
             try:
-                full_sql = sql.replace("DT_TRANSPLANT_ENRICHED", "MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED")
+                full_sql = sql  # DT_TRANSPLANT_ENRICHED resolves via deploy-time schema context
                 df = session.sql(full_sql).to_pandas()
                 st.dataframe(df, use_container_width=True)
 

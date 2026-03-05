@@ -1,101 +1,69 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Semantic View  ★ KEY SHOWCASE ★
+  LSC Donor for All Data Lab -- Semantic View  ** KEY SHOWCASE **
   =============================================================================
   
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │                                                                        │
-  │   THE SEMANTIC VIEW IS THE SINGLE SOURCE OF TRUTH                      │
-  │                                                                        │
-  │   Every downstream consumer — Cortex Agent, Snowflake Intelligence,    │
-  │   Streamlit dashboards, and future BI tools — queries data through     │
-  │   this semantic layer. It defines:                                     │
-  │                                                                        │
-  │     • What questions can be asked (dimensions + metrics)               │
-  │     • How data relates across tables (relationships)                   │
-  │     • What answers are trusted (verified queries)                      │
-  │     • How AI should behave (generation instructions)                   │
-  │                                                                        │
-  └─────────────────────────────────────────────────────────────────────────┘
+  THE SEMANTIC VIEW IS THE SINGLE SOURCE OF TRUTH
   
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │ HOW THIS DIFFERS FROM LOOKER                                            │
-  │                                                                        │
-  │ Looker LookML:                                                         │
-  │   ❌ Separate modeling language outside the database                   │
-  │   ❌ Requires Looker infrastructure and licensing                      │
-  │   ❌ Only works with structured data (can't handle clinical notes)     │
-  │   ❌ Static explore — users must know what to ask                      │
-  │   ❌ No AI-native question understanding                               │
-  │   ❌ Batch-refreshed data (not real-time)                              │
-  │                                                                        │
-  │ Snowflake Semantic View:                                                │
-  │   ✅ Native SQL DDL — lives IN the database, version-controlled        │
-  │   ✅ AI-native: Cortex Analyst understands natural language questions   │
-  │   ✅ Pairs with Cortex Search for structured + unstructured answers     │
-  │   ✅ Feeds Dynamic Tables for near real-time data                      │
-  │   ✅ Verified queries create a "trust layer" for governance            │
-  │   ✅ Auto-generates suggested questions for Snowflake Intelligence     │
-  │   ✅ No additional infrastructure or licensing required                 │
-  └─────────────────────────────────────────────────────────────────────────┘
-  
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │ HOW THIS DIFFERS FROM ORACLE OBIEE                                      │
-  │                                                                        │
-  │ Oracle OBIEE / Oracle Analytics:                                        │
-  │   ❌ RPD (Repository) is a complex binary metadata layer               │
-  │   ❌ Requires specialized OBIEE admin skills                           │
-  │   ❌ Monolithic — changes require full RPD redeploy                    │
-  │   ❌ No native AI or natural language query                            │
-  │   ❌ Tightly coupled to Oracle database                                │
-  │                                                                        │
-  │ Snowflake Semantic View:                                                │
-  │   ✅ Declarative SQL — any SQL user can read and modify                │
-  │   ✅ Modular — update dimensions/metrics independently                 │
-  │   ✅ AI-powered natural language → SQL translation                     │
-  │   ✅ Works with any data source in Snowflake (incl. Iceberg)           │
-  │   ✅ Git-friendly — plain SQL, easy to review and version              │
-  └─────────────────────────────────────────────────────────────────────────┘
-  
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │ THE PIPELINE THAT FEEDS THIS MODEL                                      │
-  │                                                                        │
-  │  Raw Tables (Bronze)                                                    │
-  │      │                                                                  │
-  │      ▼                                                                  │
-  │  Dynamic Table: DT_TRANSPLANT_ENRICHED (Silver)                         │
-  │      │   → Auto-refresh every 1 minute                                 │
-  │      │   → Joins outcomes + notes, derives risk categories             │
-  │      ▼                                                                  │
-  │  Dynamic Table: DT_GVHD_ANALYTICS (Gold)                               │
-  │      │   → Pre-aggregated metrics for fast BI queries                  │
-  │      ▼                                                                  │
-  │  ★ SEMANTIC VIEW ★  ← You are here                                     │
-  │      │                                                                  │
-  │      ├──► Cortex Agent (natural language Q&A)                           │
-  │      ├──► Snowflake Intelligence (auto-insights)                        │
-  │      ├──► Streamlit App (dashboards)                                    │
-  │      └──► Future consumers (APIs, other BI tools)                       │
-  └─────────────────────────────────────────────────────────────────────────┘
-  
-  Clause order: TABLES → FACTS → DIMENSIONS → METRICS → COMMENT →
-                AI_SQL_GENERATION → AI_QUESTION_CATEGORIZATION
+    Every downstream consumer -- Cortex Agent, Snowflake Intelligence,
+    Streamlit dashboards, and future BI tools -- queries data through
+    this semantic layer. It defines:
+      - What questions can be asked (dimensions + metrics)
+      - How data relates across tables (relationships)
+      - What answers are trusted (verified queries)
+      - How AI should behave (generation instructions)
+
+  HOW THIS DIFFERS FROM LOOKER:
+    Looker LookML:
+      - Separate modeling language outside the database
+      - Requires Looker infrastructure and licensing
+      - Only works with structured data (can't handle clinical notes)
+      - Static explore -- users must know what to ask
+      - No AI-native question understanding
+      - Batch-refreshed data (not real-time)
+
+    Snowflake Semantic View:
+      + Native SQL DDL -- lives IN the database, version-controlled
+      + AI-native: Cortex Analyst understands natural language questions
+      + Pairs with Cortex Search for structured + unstructured answers
+      + Feeds Dynamic Tables for near real-time data
+      + Verified queries create a "trust layer" for governance
+      + Auto-generates suggested questions for Snowflake Intelligence
+      + No additional infrastructure or licensing required
+
+  MULTI-USER NOTE:
+    This script creates the Semantic View in YOUR per-user schema,
+    pointing to YOUR Dynamic Tables. The verified queries use
+    fully-qualified references to your schema.
+
+  Clause order: TABLES -> FACTS -> DIMENSIONS -> METRICS -> COMMENT ->
+                AI_SQL_GENERATION -> AI_QUESTION_CATEGORIZATION
 
   Run after: 03_dynamic_tables.sql
   Run before: 06_create_agent.sql
   =============================================================================*/
 
-USE ROLE MARROWCO_HOL_ROLE;
-USE WAREHOUSE MARROWCO_HOL_WH;
-USE SCHEMA MARROWCO_DONOR_LAB.HOL;
+-- ════════════════════════════════════════════════════════════════════════════
+-- SET YOUR USER NUMBER (assigned by the lab admin)
+-- ════════════════════════════════════════════════════════════════════════════
+SET USER_NUM = '01';  -- << CHANGE THIS TO YOUR ASSIGNED NUMBER (01-20)
+
+USE ROLE IDENTIFIER('MARROWCO_HOL_ROLE_' || $USER_NUM);
+USE WAREHOUSE IDENTIFIER('MARROWCO_HOL_WH_' || $USER_NUM);
+USE SCHEMA IDENTIFIER('MARROWCO_DONOR_LAB.HOL_USER_' || $USER_NUM);
+
+-- Build fully-qualified table references for this user's schema
+SET MY_SCHEMA = 'MARROWCO_DONOR_LAB.HOL_USER_' || $USER_NUM;
+SET DT_ENRICHED = $MY_SCHEMA || '.DT_TRANSPLANT_ENRICHED';
+SET DT_ANALYTICS = $MY_SCHEMA || '.DT_GVHD_ANALYTICS';
 
 CREATE OR REPLACE SEMANTIC VIEW MARROWCO_TRANSPLANT_ANALYTICS
 
 TABLES (
-    transplant_enriched AS MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+    transplant_enriched AS IDENTIFIER($DT_ENRICHED)
         PRIMARY KEY (TRANSPLANT_ID)
         COMMENT = 'Enriched transplant-level data with derived risk categories, demographics, and clinical note summaries',
-    gvhd_analytics AS MARROWCO_DONOR_LAB.HOL.DT_GVHD_ANALYTICS
-        COMMENT = 'Pre-aggregated transplant outcome analytics by key dimensions — optimized for BI queries'
+    gvhd_analytics AS IDENTIFIER($DT_ANALYTICS)
+        COMMENT = 'Pre-aggregated transplant outcome analytics by key dimensions -- optimized for BI queries'
 )
 
 FACTS (
@@ -199,7 +167,7 @@ DIMENSIONS (
     transplant_enriched.GVHD_PROPHYLAXIS AS GVHD_PROPHYLAXIS
         COMMENT = 'Post-transplant immunosuppression regimen for GVHD prevention',
     transplant_enriched.PTCY_BASED_PROPHYLAXIS AS PTCY_BASED_PROPHYLAXIS
-        COMMENT = 'TRUE if prophylaxis includes post-transplant cyclophosphamide (PTCy) — key for haploidentical outcomes',
+        COMMENT = 'TRUE if prophylaxis includes post-transplant cyclophosphamide (PTCy) -- key for haploidentical outcomes',
     transplant_enriched.TRANSPLANT_CENTER_ID AS TRANSPLANT_CENTER_ID
         COMMENT = 'Transplant center identifier code',
     transplant_enriched.CENTER_REGION AS CENTER_REGION
@@ -291,7 +259,7 @@ METRICS (
         COMMENT = 'Average Social Vulnerability Index'
 )
 
-COMMENT = 'Semantic model for MarrowCo transplant outcome analytics — the single source of truth for all AI and BI consumption'
+COMMENT = 'Semantic model for MarrowCo transplant outcome analytics -- the single source of truth for all AI and BI consumption'
 
 AI_SQL_GENERATION '
 ## Context
@@ -303,8 +271,8 @@ ethnic background.
 ## Key Clinical Terms
 - GVHD (Graft-versus-Host Disease): when donor immune cells attack the patient
 - HCT: Hematopoietic Cell Transplantation (also called bone marrow transplant)
-- MUD: Matched Unrelated Donor (8/8 HLA match — gold standard)
-- MMUD: Mismatched Unrelated Donor (7/8 HLA match — expanding access)
+- MUD: Matched Unrelated Donor (8/8 HLA match -- gold standard)
+- MMUD: Mismatched Unrelated Donor (7/8 HLA match -- expanding access)
 - HAPLO: Haploidentical donor (half-matched, usually a family member)
 - PTCy: Post-transplant cyclophosphamide (key GVHD prevention strategy)
 - SVI: Social Vulnerability Index (CDC measure of community health vulnerability)
@@ -330,7 +298,7 @@ SELECT
     COUNT(CASE WHEN ACUTE_GVHD_GRADE >= 2 THEN 1 END) AS SIGNIFICANT_GVHD,
     ROUND(COUNT(CASE WHEN ACUTE_GVHD_GRADE >= 2 THEN 1 END) * 100.0 / COUNT(*), 1) AS GVHD_RATE_PCT,
     ROUND(AVG(GVHD_RISK_SCORE), 3) AS AVG_RISK_SCORE
-FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+FROM DT_TRANSPLANT_ENRICHED
 GROUP BY DONOR_TYPE_LABEL
 ORDER BY GVHD_RATE_PCT DESC
 ```
@@ -343,7 +311,7 @@ SELECT
     ROUND(COUNT(CASE WHEN ONE_YEAR_SURVIVOR THEN 1 END) * 100.0 / COUNT(*), 1) AS ONE_YEAR_SURVIVAL_PCT,
     ROUND(COUNT(CASE WHEN TWO_YEAR_SURVIVOR THEN 1 END) * 100.0 / COUNT(*), 1) AS TWO_YEAR_SURVIVAL_PCT,
     ROUND(AVG(SURVIVAL_DAYS)) AS AVG_SURVIVAL_DAYS
-FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+FROM DT_TRANSPLANT_ENRICHED
 WHERE DONOR_TYPE IN (''MUD_8_8'', ''MMUD_7_8'')
 GROUP BY DONOR_TYPE_LABEL
 ORDER BY DONOR_TYPE_LABEL
@@ -360,7 +328,7 @@ SELECT
     ROUND(COUNT(CASE WHEN ONE_YEAR_SURVIVOR THEN 1 END) * 100.0 / COUNT(*), 1) AS ONE_YEAR_SURVIVAL_PCT,
     ROUND(AVG(ACUTE_GVHD_GRADE), 2) AS AVG_GVHD_GRADE,
     ROUND(AVG(TIME_TO_ENGRAFTMENT_DAYS), 1) AS AVG_ENGRAFTMENT_DAYS
-FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+FROM DT_TRANSPLANT_ENRICHED
 GROUP BY TRANSPLANT_CENTER_ID, CENTER_REGION, CENTER_STATE
 HAVING COUNT(*) >= 10
 ORDER BY ONE_YEAR_SURVIVAL_PCT DESC
@@ -376,7 +344,7 @@ SELECT
     ROUND(COUNT(CASE WHEN ONE_YEAR_SURVIVOR THEN 1 END) * 100.0 / COUNT(*), 1) AS ONE_YEAR_SURVIVAL_PCT,
     ROUND(AVG(GVHD_RISK_SCORE), 3) AS AVG_RISK_SCORE,
     ROUND(AVG(SVI_SCORE), 3) AS AVG_SVI_SCORE
-FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+FROM DT_TRANSPLANT_ENRICHED
 GROUP BY PATIENT_RACE_ETHNICITY
 ORDER BY TOTAL_PATIENTS DESC
 ```
@@ -390,7 +358,7 @@ SELECT
     ROUND(COUNT(CASE WHEN ACUTE_GVHD_GRADE >= 3 THEN 1 END) * 100.0 / COUNT(*), 1) AS SEVERE_GVHD_PCT,
     ROUND(COUNT(CASE WHEN ONE_YEAR_SURVIVOR THEN 1 END) * 100.0 / COUNT(*), 1) AS ONE_YEAR_SURVIVAL_PCT,
     ROUND(AVG(TIME_TO_ENGRAFTMENT_DAYS), 1) AS AVG_ENGRAFTMENT_DAYS
-FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+FROM DT_TRANSPLANT_ENRICHED
 WHERE DONOR_TYPE = ''HAPLO''
 GROUP BY PTCY_BASED_PROPHYLAXIS
 ORDER BY PROPHYLAXIS_TYPE
@@ -406,7 +374,7 @@ SELECT
     ROUND(AVG(GVHD_RISK_SCORE), 3) AS AVG_RISK_SCORE,
     ROUND(AVG(TIME_TO_ENGRAFTMENT_DAYS), 1) AS AVG_ENGRAFTMENT_DAYS,
     ROUND(SUM(RELAPSE_FLAG) * 100.0 / COUNT(*), 1) AS RELAPSE_RATE_PCT
-FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+FROM DT_TRANSPLANT_ENRICHED
 GROUP BY SVI_CATEGORY
 ORDER BY AVG_RISK_SCORE DESC
 ```
@@ -439,6 +407,6 @@ DECLINE questions about:
 -- ║ Verify the Semantic View                                                 ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
-SHOW SEMANTIC VIEWS IN SCHEMA MARROWCO_DONOR_LAB.HOL;
+SHOW SEMANTIC VIEWS;
 
 DESCRIBE SEMANTIC VIEW MARROWCO_TRANSPLANT_ANALYTICS;

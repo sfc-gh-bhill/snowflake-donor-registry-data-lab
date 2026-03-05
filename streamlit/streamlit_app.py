@@ -91,7 +91,7 @@ if session:
         row = session.sql("""
             SELECT COUNT(DISTINCT DONOR_ID) AS DONORS,
                    COUNT(*) AS TRANSPLANTS
-            FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+            FROM DT_TRANSPLANT_ENRICHED
         """).collect()[0]
         kpi_donors = f"{row['DONORS']:,}"
         kpi_transplants = f"{row['TRANSPLANTS']:,}"

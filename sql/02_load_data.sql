@@ -1,5 +1,5 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Load Data
+  LSC Donor for All Data Lab -- Load Data
   =============================================================================
   Uploads CSV files to the internal stage and loads them into tables.
   
@@ -7,6 +7,10 @@
     Option A: Upload from local machine via SnowSQL/Snowsight
     Option B: Upload from GitHub URL (if using Cortex Code)
   
+  MULTI-USER NOTE:
+    The admin runs this script once to load data into the SHARED schema (HOL).
+    Participants do NOT run this script -- data is already loaded for them.
+
   Run after: 01_create_tables.sql
   Run before: 03_dynamic_tables.sql
   =============================================================================*/
@@ -60,7 +64,7 @@ SELECT
     COUNT(DISTINCT DIAGNOSIS) AS DIAGNOSES,
     MIN(TRANSPLANT_DATE) AS EARLIEST_TRANSPLANT,
     MAX(TRANSPLANT_DATE) AS LATEST_TRANSPLANT,
-    '✅ Transplant outcomes loaded' AS STATUS
+    'Transplant outcomes loaded' AS STATUS
 FROM TRANSPLANT_OUTCOMES;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -78,7 +82,7 @@ SELECT
     COUNT(DISTINCT NOTE_TYPE) AS NOTE_TYPES,
     COUNT(DISTINCT TRANSPLANT_ID) AS LINKED_TRANSPLANTS,
     AVG(LENGTH(NOTE_TEXT))::INT AS AVG_NOTE_LENGTH,
-    '✅ Clinical notes loaded' AS STATUS
+    'Clinical notes loaded' AS STATUS
 FROM CLINICAL_NOTES;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -87,8 +91,8 @@ FROM CLINICAL_NOTES;
 -- Verify FK integrity: all clinical note TRANSPLANT_IDs exist in outcomes
 SELECT 
     CASE 
-        WHEN COUNT(*) = 0 THEN '✅ FK integrity verified — all notes link to valid transplants'
-        ELSE '❌ WARNING: ' || COUNT(*) || ' orphaned clinical notes found'
+        WHEN COUNT(*) = 0 THEN 'FK integrity verified -- all notes link to valid transplants'
+        ELSE 'WARNING: ' || COUNT(*) || ' orphaned clinical notes found'
     END AS FK_CHECK
 FROM CLINICAL_NOTES cn
 LEFT JOIN TRANSPLANT_OUTCOMES t ON cn.TRANSPLANT_ID = t.TRANSPLANT_ID

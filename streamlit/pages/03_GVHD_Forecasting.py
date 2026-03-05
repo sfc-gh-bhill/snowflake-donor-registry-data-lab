@@ -25,7 +25,7 @@ if session:
                    ACUTE_GVHD_GRADE, SURVIVAL_DAYS, SURVIVAL_STATUS,
                    GVHD_RISK_SCORE, TIME_TO_ENGRAFTMENT_DAYS, SVI_SCORE,
                    ONE_YEAR_SURVIVOR, CONDITIONING_INTENSITY
-            FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+            FROM DT_TRANSPLANT_ENRICHED
         """).to_pandas()
         live_data = True
     except Exception:

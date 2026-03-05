@@ -24,8 +24,9 @@ st.markdown("""
     <p style="color: #FAFAFA; font-size: 0.95rem; line-height: 1.6; margin: 0;">
         This page helps the <strong style="color: #29B5E8;">Account Administrator</strong> provision
         the right access for lab participants, and clean up after the lab is complete.
-        The lab uses a dedicated role (<code>MARROWCO_HOL_ROLE</code>) so participants
-        never need ACCOUNTADMIN access.
+        The lab supports <strong style="color: #00D4AA;">multi-user mode</strong> (5-20 participants)
+        with per-user isolation: each participant gets their own role, warehouse, and schema
+        while sharing read-only access to base tables.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -48,8 +49,10 @@ with tab_setup:
 
     st.markdown(render_info_callout(
         "Who runs this?",
-        "An Account Administrator runs this script once. After this, all participants use "
-        "MARROWCO_HOL_ROLE for the entire lab (scripts 01-08). No ACCOUNTADMIN access is needed by participants."
+        "An Account Administrator runs this script once. For multi-user labs (5-20 participants), "
+        "use sql/00_admin_provision.sql instead -- it creates per-user roles, warehouses, and schemas. "
+        "The script below is for single-user mode. After provisioning, participants use their assigned "
+        "role (MARROWCO_HOL_ROLE_<NN>) for scripts 03-08. No ACCOUNTADMIN access is needed by participants."
     ), unsafe_allow_html=True)
 
     # User list input
@@ -57,7 +60,8 @@ with tab_setup:
     st.markdown("**Lab Participants**")
     st.markdown(
         '<p style="color:#8892b0;font-size:0.85rem;">Enter Snowflake usernames (one per line) '
-        'to grant them the lab role.</p>',
+        'to grant them the lab role. For multi-user mode, use sql/00_admin_provision.sql '
+        'and assign per-user roles (MARROWCO_HOL_ROLE_01, _02, etc.).</p>',
         unsafe_allow_html=True,
     )
     user_list = st.text_area(
@@ -445,73 +449,39 @@ with tab_cleanup:
         user_revokes = "-- REVOKE ROLE MARROWCO_HOL_ROLE FROM USER <USERNAME>;"
 
     teardown_sql = f"""-- ============================================================================
--- LSC Donor for All Data Lab — Post-Lab Cleanup
+-- LSC Donor for All Data Lab -- Post-Lab Cleanup
 -- ============================================================================
 -- Run as: ACCOUNTADMIN
 -- Run when: After the lab is complete
 -- WARNING: This is DESTRUCTIVE and IRREVERSIBLE
+--
+-- For multi-user mode, use sql/00_admin_teardown.sql instead -- it drops
+-- all per-user environments (roles, warehouses, schemas) in a loop.
+-- The script below handles single-user mode cleanup.
 -- ============================================================================
 
 USE ROLE ACCOUNTADMIN;
 
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 1. REVOKE ROLE FROM PARTICIPANTS                                       │
--- └─────────────────────────────────────────────────────────────────────────┘
+-- 1. REVOKE ROLE FROM PARTICIPANTS
 {user_revokes}
 
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 2. DISABLE WEB SEARCH (if it was enabled)                              │
--- └─────────────────────────────────────────────────────────────────────────┘
+-- 2. DISABLE WEB SEARCH (if it was enabled)
 ALTER ACCOUNT UNSET ENABLE_CORTEX_WEBSEARCH;
 
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 3. DROP AI/ML OBJECTS                                                  │
--- └─────────────────────────────────────────────────────────────────────────┘
-DROP AGENT IF EXISTS MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT;
-DROP MODEL IF EXISTS MARROWCO_DONOR_LAB.HOL.GVHD_RISK_MODEL;
-DROP SEMANTIC VIEW IF EXISTS MARROWCO_DONOR_LAB.HOL.MARROWCO_TRANSPLANT_ANALYTICS;
-DROP CORTEX SEARCH SERVICE IF EXISTS MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES_SEARCH;
-
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 4. DROP DYNAMIC TABLES                                                 │
--- └─────────────────────────────────────────────────────────────────────────┘
-DROP DYNAMIC TABLE IF EXISTS MARROWCO_DONOR_LAB.HOL.DT_GVHD_ANALYTICS;
-DROP DYNAMIC TABLE IF EXISTS MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED;
-
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 5. DROP TABLES                                                         │
--- └─────────────────────────────────────────────────────────────────────────┘
-DROP TABLE IF EXISTS MARROWCO_DONOR_LAB.HOL.ML_PREDICTIONS;
-DROP TABLE IF EXISTS MARROWCO_DONOR_LAB.HOL.ML_TRAINING_DATA;
-DROP TABLE IF EXISTS MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES;
-DROP TABLE IF EXISTS MARROWCO_DONOR_LAB.HOL.TRANSPLANT_OUTCOMES;
-
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 6. DROP STAGE & FILE FORMAT                                            │
--- └─────────────────────────────────────────────────────────────────────────┘
-DROP STAGE IF EXISTS MARROWCO_DONOR_LAB.HOL.DATA_STAGE;
-DROP FILE FORMAT IF EXISTS MARROWCO_DONOR_LAB.HOL.CSV_FORMAT;
-
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 7. DROP DATABASE (cascades schema)                                     │
--- └─────────────────────────────────────────────────────────────────────────┘
+-- 3. DROP DATABASE (cascades all schemas, tables, DTs, agents, models, etc.)
 DROP DATABASE IF EXISTS MARROWCO_DONOR_LAB;
 
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 8. DROP WAREHOUSE                                                      │
--- └─────────────────────────────────────────────────────────────────────────┘
+-- 4. DROP WAREHOUSE
 DROP WAREHOUSE IF EXISTS MARROWCO_HOL_WH;
 
--- ┌─────────────────────────────────────────────────────────────────────────┐
--- │ 9. REVOKE ACCOUNT-LEVEL GRANTS & DROP ROLE                             │
--- └─────────────────────────────────────────────────────────────────────────┘
-REVOKE EXECUTE MANAGED TASK ON ACCOUNT FROM ROLE MARROWCO_HOL_ROLE;
+-- 5. REVOKE ACCOUNT-LEVEL GRANTS & DROP ROLE
+-- REVOKE EXECUTE MANAGED TASK ON ACCOUNT FROM ROLE MARROWCO_HOL_ROLE;
 DROP ROLE IF EXISTS MARROWCO_HOL_ROLE;
 
 -- ============================================================================
--- DONE — All lab artifacts have been removed
+-- DONE -- All lab artifacts have been removed
 -- ============================================================================
-SELECT 'Teardown complete — all lab artifacts removed.' AS STATUS;"""
+SELECT 'Teardown complete -- all lab artifacts removed.' AS STATUS;"""
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.code(teardown_sql, language="sql")

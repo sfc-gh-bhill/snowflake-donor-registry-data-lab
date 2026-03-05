@@ -1,29 +1,21 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Grants & Permissions
+  LSC Donor for All Data Lab -- Grants & Permissions
   =============================================================================
   
-  Additional grants for sharing access with other team members.
-  Run this if you need to give other users access to the HOL artifacts.
+  MULTI-USER NOTE:
+    In multi-user mode, all grants are handled by 00_admin_provision.sql.
+    This script is kept for reference and for enabling optional account-level
+    features like web search.
+
+  This script covers:
+    1. Enabling web search for Cortex Agents (account-level, optional)
+    2. Role assignment examples for multi-user mode
+    3. Verification queries
   
   Run after: All other scripts
   =============================================================================*/
 
 USE ROLE ACCOUNTADMIN;
-
--- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ Grant MARROWCO_HOL_ROLE to additional users                                  ║
--- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║ Replace '<USERNAME>' with the actual Snowflake username                  ║
--- ╚═══════════════════════════════════════════════════════════════════════════╝
-
--- GRANT ROLE MARROWCO_HOL_ROLE TO USER <USERNAME>;
-
--- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ Grant Cortex AI access (required for AI functions)                       ║
--- ╚═══════════════════════════════════════════════════════════════════════════╝
-
--- Ensure Cortex functions are available
-GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE MARROWCO_HOL_ROLE;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Enable web_search for Agent (account-level setting)                      ║
@@ -40,18 +32,40 @@ GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE MARROWCO_HOL_ROLE;
 -- ALTER ACCOUNT SET ENABLE_CORTEX_WEBSEARCH = TRUE;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ Streamlit deployment grants                                              ║
+-- ║ Grant Cortex AI access (already handled in provisioning, shown here      ║
+-- ║ for reference if running in single-user mode)                            ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
-GRANT USAGE ON DATABASE MARROWCO_DONOR_LAB TO ROLE MARROWCO_HOL_ROLE;
-GRANT USAGE ON SCHEMA MARROWCO_DONOR_LAB.HOL TO ROLE MARROWCO_HOL_ROLE;
-GRANT SELECT ON ALL TABLES IN SCHEMA MARROWCO_DONOR_LAB.HOL TO ROLE MARROWCO_HOL_ROLE;
-GRANT SELECT ON ALL DYNAMIC TABLES IN SCHEMA MARROWCO_DONOR_LAB.HOL TO ROLE MARROWCO_HOL_ROLE;
-GRANT SELECT ON ALL VIEWS IN SCHEMA MARROWCO_DONOR_LAB.HOL TO ROLE MARROWCO_HOL_ROLE;
--- Semantic views: MARROWCO_HOL_ROLE already owns these (OWNERSHIP grants full access)
-GRANT USAGE ON WAREHOUSE MARROWCO_HOL_WH TO ROLE MARROWCO_HOL_ROLE;
+-- Single-user mode only:
+-- GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE MARROWCO_HOL_ROLE;
+
+-- Multi-user mode: already granted per-user in 00_admin_provision.sql
+-- GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE MARROWCO_HOL_ROLE_01;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ Verify all grants                                                        ║
+-- ║ Assign per-user roles to actual Snowflake users                          ║
+-- ╠═══════════════════════════════════════════════════════════════════════════╣
+-- ║ Replace <USERNAME> with actual Snowflake login names.                    ║
+-- ║ Each participant gets ONE role.                                          ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
-SHOW GRANTS TO ROLE MARROWCO_HOL_ROLE;
+
+-- GRANT ROLE MARROWCO_HOL_ROLE_01 TO USER JSMITH;
+-- GRANT ROLE MARROWCO_HOL_ROLE_02 TO USER JDOE;
+-- GRANT ROLE MARROWCO_HOL_ROLE_03 TO USER AGARCIA;
+-- ...
+
+-- ╔═══════════════════════════════════════════════════════════════════════════╗
+-- ║ Verify grants for a specific user                                        ║
+-- ╚═══════════════════════════════════════════════════════════════════════════╝
+
+-- Check what a per-user role can access:
+-- SHOW GRANTS TO ROLE MARROWCO_HOL_ROLE_01;
+
+-- Check shared schema access:
+-- SHOW GRANTS ON SCHEMA MARROWCO_DONOR_LAB.HOL;
+
+-- Check per-user schema access:
+-- SHOW GRANTS ON SCHEMA MARROWCO_DONOR_LAB.HOL_USER_01;
+
+-- Verify a user's role assignments:
+-- SHOW GRANTS TO USER JSMITH;

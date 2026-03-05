@@ -1,40 +1,42 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Machine Learning Model
+  LSC Donor for All Data Lab -- Machine Learning Model
   =============================================================================
   
   Trains a GVHD risk prediction model using Snowflake ML and registers it 
   in the Snowflake Model Registry.
   
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │ WHAT WE BUILD                                                           │
-  │                                                                        │
-  │ 1. Classification model: Predicts GVHD severity (High Risk vs Not)     │
-  │ 2. Training data: Features from the DT_TRANSPLANT_ENRICHED table       │
-  │ 3. Model registry: Versioned model with evaluation metrics             │
-  │ 4. Inference: Apply model to score new patients                        │
-  │                                                                        │
-  │ This showcases Snowflake's native ML capabilities:                     │
-  │   ✅ No data movement — train where data lives                         │
-  │   ✅ Model Registry — version, manage, and govern models               │
-  │   ✅ Evaluation metrics — AUC, precision, recall, F1                   │
-  │   ✅ Feature importance — understand what drives predictions            │
-  │   ✅ Seamless inference in SQL                                          │
-  └─────────────────────────────────────────────────────────────────────────┘
+  WHAT WE BUILD:
+    1. Classification model: Predicts GVHD severity (High Risk vs Not)
+    2. Training data: Features from the DT_TRANSPLANT_ENRICHED table
+    3. Model registry: Versioned model with evaluation metrics
+    4. Inference: Apply model to score new patients
+
+    This showcases Snowflake's native ML capabilities:
+      + No data movement -- train where data lives
+      + Model Registry -- version, manage, and govern models
+      + Evaluation metrics -- AUC, precision, recall, F1
+      + Feature importance -- understand what drives predictions
+      + Seamless inference in SQL
   
   Run after: 03_dynamic_tables.sql (needs DT_TRANSPLANT_ENRICHED)
   =============================================================================*/
 
-USE ROLE MARROWCO_HOL_ROLE;
-USE WAREHOUSE MARROWCO_HOL_WH;
-USE SCHEMA MARROWCO_DONOR_LAB.HOL;
+-- ════════════════════════════════════════════════════════════════════════════
+-- SET YOUR USER NUMBER (assigned by the lab admin)
+-- ════════════════════════════════════════════════════════════════════════════
+SET USER_NUM = '01';  -- << CHANGE THIS TO YOUR ASSIGNED NUMBER (01-20)
+
+USE ROLE IDENTIFIER('MARROWCO_HOL_ROLE_' || $USER_NUM);
+USE WAREHOUSE IDENTIFIER('MARROWCO_HOL_WH_' || $USER_NUM);
+USE SCHEMA IDENTIFIER('MARROWCO_DONOR_LAB.HOL_USER_' || $USER_NUM);
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ STEP 1: Prepare Training Data                                            ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ Create a feature table from the enriched dynamic table with:            ║
--- ║   • Target variable: HIGH_RISK_GVHD (binary: Grade III-IV)             ║
--- ║   • Features: patient/donor demographics, treatment, risk factors       ║
--- ║   • Train/test split: 80/20 random split                               ║
+-- ║   - Target variable: HIGH_RISK_GVHD (binary: Grade III-IV)             ║
+-- ║   - Features: patient/donor demographics, treatment, risk factors       ║
+-- ║   - Train/test split: 80/20 random split                               ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 CREATE OR REPLACE TABLE ML_TRAINING_DATA AS
@@ -87,10 +89,10 @@ GROUP BY SPLIT;
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ Uses Snowflake ML Classification to train a GVHD risk model.            ║
 -- ║ Snowflake automatically:                                                ║
--- ║   • Handles categorical encoding                                        ║
--- ║   • Selects the best algorithm                                          ║
--- ║   • Tunes hyperparameters                                               ║
--- ║   • Computes evaluation metrics                                         ║
+-- ║   - Handles categorical encoding                                        ║
+-- ║   - Selects the best algorithm                                          ║
+-- ║   - Tunes hyperparameters                                               ║
+-- ║   - Computes evaluation metrics                                         ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 CREATE OR REPLACE SNOWFLAKE.ML.CLASSIFICATION GVHD_RISK_MODEL(
@@ -106,16 +108,16 @@ CREATE OR REPLACE SNOWFLAKE.ML.CLASSIFICATION GVHD_RISK_MODEL(
 -- ║ STEP 3: Evaluate Model Performance                                       ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ Key metrics for a clinical risk prediction model:                       ║
--- ║   • AUC: Area Under ROC Curve (> 0.7 is acceptable for clinical use)   ║
--- ║   • Precision: Of predicted high-risk, how many truly are?             ║
--- ║   • Recall: Of actual high-risk, how many did we catch?                ║
--- ║   • F1: Harmonic mean of precision and recall                          ║
+-- ║   - AUC: Area Under ROC Curve (> 0.7 is acceptable for clinical use)   ║
+-- ║   - Precision: Of predicted high-risk, how many truly are?             ║
+-- ║   - Recall: Of actual high-risk, how many did we catch?                ║
+-- ║   - F1: Harmonic mean of precision and recall                          ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 -- View evaluation metrics
 CALL GVHD_RISK_MODEL!SHOW_EVALUATION_METRICS();
 
--- View feature importance — which factors drive GVHD risk?
+-- View feature importance -- which factors drive GVHD risk?
 CALL GVHD_RISK_MODEL!SHOW_FEATURE_IMPORTANCE();
 
 -- View global training metrics
@@ -159,7 +161,7 @@ WHERE SPLIT = 'TEST';
 
 -- Confusion matrix
 SELECT 
-    'Actual: ' || HIGH_RISK_GVHD || ' → Predicted: ' || PREDICTED_HIGH_RISK AS OUTCOME,
+    'Actual: ' || HIGH_RISK_GVHD || ' -> Predicted: ' || PREDICTED_HIGH_RISK AS OUTCOME,
     COUNT(*) AS COUNT
 FROM ML_PREDICTIONS
 GROUP BY HIGH_RISK_GVHD, PREDICTED_HIGH_RISK
@@ -170,7 +172,7 @@ SELECT
     COUNT(*) AS TOTAL_TEST,
     SUM(CASE WHEN HIGH_RISK_GVHD = PREDICTED_HIGH_RISK THEN 1 ELSE 0 END) AS CORRECT,
     ROUND(SUM(CASE WHEN HIGH_RISK_GVHD = PREDICTED_HIGH_RISK THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) AS ACCURACY_PCT,
-    '✅ Model evaluation complete' AS STATUS
+    'Model evaluation complete' AS STATUS
 FROM ML_PREDICTIONS;
 
 -- Risk distribution
@@ -187,18 +189,7 @@ GROUP BY 1
 ORDER BY 1;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ STEP 6: Register Model (for production use)                              ║
--- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║ The model is automatically registered when created with                  ║
--- ║ SNOWFLAKE.ML.CLASSIFICATION. You can view it in the Model Registry:     ║
--- ║                                                                          ║
--- ║   SHOW MODELS IN SCHEMA MARROWCO_DONOR_LAB.HOL;                            ║
--- ║                                                                          ║
--- ║ In a production workflow, you would:                                     ║
--- ║   1. Train multiple model versions                                      ║
--- ║   2. Compare evaluation metrics across versions                         ║
--- ║   3. Promote the best version to "default"                              ║
--- ║   4. Use for real-time scoring via Dynamic Tables or Streamlit          ║
+-- ║ STEP 6: Verify Model in Registry                                         ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
-SHOW MODELS IN SCHEMA MARROWCO_DONOR_LAB.HOL;
+SHOW MODELS;

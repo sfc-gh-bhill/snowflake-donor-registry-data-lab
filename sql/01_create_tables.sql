@@ -1,22 +1,33 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Create Tables
+  LSC Donor for All Data Lab -- Create Tables
   =============================================================================
   Creates the base (Bronze) landing tables for transplant outcome data
   and clinical notes.
-  
+
   These tables receive raw data from CSV files and serve as the foundation
-  for the Dynamic Tables pipeline (Bronze → Silver → Gold).
-  
-  Run after: 00_bootstrap.sql
+  for the Dynamic Tables pipeline (Bronze -> Silver -> Gold).
+
+  MULTI-USER NOTE:
+    In multi-user mode, base tables live in the SHARED schema (HOL).
+    The admin runs this script once using MARROWCO_HOL_ROLE.
+    Participants do NOT run this script -- they start at 03_dynamic_tables.sql.
+
+  SINGLE-USER NOTE:
+    Run as your own role (MARROWCO_HOL_ROLE or MARROWCO_HOL_ROLE_<NN>).
+
+  Run after: 00_bootstrap.sql (single-user) or 00_admin_provision.sql (multi-user)
   Run before: 02_load_data.sql
   =============================================================================*/
 
+-- ════════════════════════════════════════════════════════════════════════════
+-- CONTEXT: These tables are created in the SHARED schema
+-- ════════════════════════════════════════════════════════════════════════════
 USE ROLE MARROWCO_HOL_ROLE;
 USE WAREHOUSE MARROWCO_HOL_WH;
 USE SCHEMA MARROWCO_DONOR_LAB.HOL;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ TABLE 1: TRANSPLANT_OUTCOMES (Structured Data — Bronze)                  ║
+-- ║ TABLE 1: TRANSPLANT_OUTCOMES (Structured Data -- Bronze)                  ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ Primary structured dataset containing transplant procedure details,      ║
 -- ║ patient/donor demographics, and clinical outcomes.                        ║
@@ -64,11 +75,11 @@ CREATE OR REPLACE TABLE TRANSPLANT_OUTCOMES (
 COMMENT = 'Bronze layer: Raw transplant outcome data from National Transplant Registry registry (synthetic for HOL)';
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ TABLE 2: CLINICAL_NOTES (Unstructured Data — Bronze)                     ║
+-- ║ TABLE 2: CLINICAL_NOTES (Unstructured Data -- Bronze)                     ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ Physician narratives, GVHD assessments, discharge summaries, and         ║
 -- ║ research annotations. This is the unstructured data that Looker           ║
--- ║ cannot handle — representing 80% of clinical intelligence.               ║
+-- ║ cannot handle -- representing 80% of clinical intelligence.               ║
 -- ║                                                                          ║
 -- ║ Used by Cortex Search for semantic retrieval and RAG-based Q&A.          ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -86,7 +97,7 @@ CREATE OR REPLACE TABLE CLINICAL_NOTES (
     CONSTRAINT FK_NOTES_TRANSPLANT FOREIGN KEY (TRANSPLANT_ID) 
         REFERENCES TRANSPLANT_OUTCOMES(TRANSPLANT_ID)
 )
-COMMENT = 'Bronze layer: Unstructured clinical notes — physician narratives, GVHD assessments, research annotations';
+COMMENT = 'Bronze layer: Unstructured clinical notes -- physician narratives, GVHD assessments, research annotations';
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Verify tables created                                                    ║

@@ -1,22 +1,22 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Dynamic Tables Pipeline
+  LSC Donor for All Data Lab -- Dynamic Tables Pipeline
   =============================================================================
   
   ┌─────────────────────────────────────────────────────────────────────────┐
   │                    WHY DYNAMIC TABLES?                                  │
   │                                                                        │
   │  Traditional BI tools like Looker or Oracle OBIEE rely on:             │
-  │    ❌ Scheduled batch ETL (often hourly or daily)                      │
-  │    ❌ External orchestration (Informatica, Airflow, dbt)               │
-  │    ❌ Manual dependency management between transformations             │
-  │    ❌ Complex incremental logic written by engineers                   │
+  │    - Scheduled batch ETL (often hourly or daily)                       │
+  │    - External orchestration (Informatica, Airflow, dbt)                │
+  │    - Manual dependency management between transformations              │
+  │    - Complex incremental logic written by engineers                    │
   │                                                                        │
   │  Snowflake Dynamic Tables provide:                                     │
-  │    ✅ Declarative SQL — define the WHAT, Snowflake handles the HOW     │
-  │    ✅ Automatic incremental refresh — only processes changed data      │
-  │    ✅ Built-in dependency DAG — Snowflake manages pipeline ordering    │
-  │    ✅ Near real-time (target lag as low as 1 minute)                   │
-  │    ✅ No external orchestrator needed                                  │
+  │    + Declarative SQL -- define the WHAT, Snowflake handles the HOW     │
+  │    + Automatic incremental refresh -- only processes changed data      │
+  │    + Built-in dependency DAG -- Snowflake manages pipeline ordering    │
+  │    + Near real-time (target lag as low as 1 minute)                    │
+  │    + No external orchestrator needed                                   │
   │                                                                        │
   │  This pipeline feeds the Semantic View, which is the single source     │
   │  of truth consumed by ALL downstream analytics and AI tools.           │
@@ -24,53 +24,62 @@
   
   Pipeline Architecture:
   
-    TRANSPLANT_OUTCOMES ─┐
-    (Bronze - Raw)       │
-                         ├──► DT_TRANSPLANT_ENRICHED ──► DT_GVHD_ANALYTICS
-    CLINICAL_NOTES ──────┘    (Silver - Enriched)         (Gold - Analytics)
-    (Bronze - Raw)                    │
-                                      ▼
-                               SEMANTIC VIEW
-                                      │
-                              ┌───────┼───────┐
-                              ▼       ▼       ▼
-                           Agent  Streamlit  Intelligence
-  
-  Run after: 02_load_data.sql
-  Run before: 05_semantic_view.sql
+    SHARED: TRANSPLANT_OUTCOMES ─┐
+    (Bronze - Read-only)         │
+                                 ├──► DT_TRANSPLANT_ENRICHED ──► DT_GVHD_ANALYTICS
+    SHARED: CLINICAL_NOTES ──────┘    (Silver - Your Schema)       (Gold - Your Schema)
+    (Bronze - Read-only)                        │
+                                                ▼
+                                         SEMANTIC VIEW
+                                                │
+                                        ┌───────┼───────┐
+                                        ▼       ▼       ▼
+                                     Agent  Streamlit  Intelligence
+
+  Run after: Admin has run 01_create_tables.sql + 02_load_data.sql
+  Run before: 04_cortex_search.sql
   =============================================================================*/
 
-USE ROLE MARROWCO_HOL_ROLE;
-USE WAREHOUSE MARROWCO_HOL_WH;
-USE SCHEMA MARROWCO_DONOR_LAB.HOL;
+-- ════════════════════════════════════════════════════════════════════════════
+-- SET YOUR USER NUMBER (assigned by the lab admin)
+-- ════════════════════════════════════════════════════════════════════════════
+SET USER_NUM = '01';  -- << CHANGE THIS TO YOUR ASSIGNED NUMBER (01-20)
+
+-- Set context to your isolated environment
+USE ROLE IDENTIFIER('MARROWCO_HOL_ROLE_' || $USER_NUM);
+USE WAREHOUSE IDENTIFIER('MARROWCO_HOL_WH_' || $USER_NUM);
+USE SCHEMA IDENTIFIER('MARROWCO_DONOR_LAB.HOL_USER_' || $USER_NUM);
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ SILVER LAYER: DT_TRANSPLANT_ENRICHED                                     ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ Enriches transplant outcomes with:                                       ║
--- ║   • Derived age groups and risk categories                              ║
--- ║   • Clinical note counts and latest note summary per patient            ║
--- ║   • Computed survival metrics                                           ║
--- ║   • Social vulnerability classification                                 ║
+-- ║   - Derived age groups and risk categories                              ║
+-- ║   - Clinical note counts and latest note summary per patient            ║
+-- ║   - Computed survival metrics                                           ║
+-- ║   - Social vulnerability classification                                 ║
 -- ║                                                                          ║
 -- ║ TARGET_LAG = 1 MINUTE means:                                            ║
 -- ║   When new data lands in the Bronze tables, this table automatically     ║
--- ║   refreshes within 1 minute — NO cron jobs, NO orchestrator, NO code.   ║
+-- ║   refreshes within 1 minute -- NO cron jobs, NO orchestrator, NO code.   ║
 -- ║   Snowflake handles the incremental logic internally.                    ║
+-- ║                                                                          ║
+-- ║ NOTE: Reads from SHARED schema (MARROWCO_DONOR_LAB.HOL) but creates    ║
+-- ║ the Dynamic Table in YOUR schema (HOL_USER_<NN>).                       ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 CREATE OR REPLACE DYNAMIC TABLE DT_TRANSPLANT_ENRICHED
     TARGET_LAG = '1 MINUTE'
-    WAREHOUSE = MARROWCO_HOL_WH
+    WAREHOUSE = IDENTIFIER('MARROWCO_HOL_WH_' || $USER_NUM)
     COMMENT = 'Silver layer: Enriched transplant data with derived analytics columns'
 AS
 SELECT
-    -- ── Core identifiers ──
+    -- Core identifiers
     t.TRANSPLANT_ID,
     t.PATIENT_ID,
     t.TRANSPLANT_DATE,
     
-    -- ── Patient demographics ──
+    -- Patient demographics
     t.PATIENT_AGE,
     CASE 
         WHEN t.PATIENT_AGE < 18 THEN 'Pediatric (<18)'
@@ -81,7 +90,7 @@ SELECT
     t.PATIENT_SEX,
     t.PATIENT_RACE_ETHNICITY,
     
-    -- ── Diagnosis ──
+    -- Diagnosis
     t.DIAGNOSIS,
     t.DIAGNOSIS_CATEGORY,
     t.DISEASE_STAGE,
@@ -91,7 +100,7 @@ SELECT
         ELSE 'High'
     END AS DISEASE_RISK_CATEGORY,
     
-    -- ── Donor information ──
+    -- Donor information
     t.DONOR_TYPE,
     CASE t.DONOR_TYPE
         WHEN 'MUD_8_8'  THEN 'Matched Unrelated (8/8)'
@@ -107,7 +116,7 @@ SELECT
         ELSE FALSE
     END AS SEX_MISMATCH_FLAG,
     
-    -- ── Treatment ──
+    -- Treatment
     t.CONDITIONING_REGIMEN,
     CASE 
         WHEN t.CONDITIONING_REGIMEN LIKE '%MAC%' THEN 'Myeloablative'
@@ -120,10 +129,10 @@ SELECT
         ELSE FALSE 
     END AS PTCY_BASED_PROPHYLAXIS,
     
-    -- ── Outcomes ──
+    -- Outcomes
     t.TIME_TO_ENGRAFTMENT_DAYS,
     CASE 
-        WHEN t.TIME_TO_ENGRAFTMENT_DAYS <= 14 THEN 'Fast (≤14d)'
+        WHEN t.TIME_TO_ENGRAFTMENT_DAYS <= 14 THEN 'Fast (<=14d)'
         WHEN t.TIME_TO_ENGRAFTMENT_DAYS <= 21 THEN 'Normal (15-21d)'
         ELSE 'Delayed (>21d)'
     END AS ENGRAFTMENT_SPEED,
@@ -152,7 +161,7 @@ SELECT
         ELSE 'High Risk'
     END AS RISK_TIER,
     
-    -- ── Geography & Social Determinants ──
+    -- Geography & Social Determinants
     t.TRANSPLANT_CENTER_ID,
     t.CENTER_REGION,
     t.CENTER_STATE,
@@ -165,22 +174,21 @@ SELECT
         ELSE 'Very High Vulnerability'
     END AS SVI_CATEGORY,
     
-    -- ── Clinical Notes Aggregation ──
+    -- Clinical Notes Aggregation
     n.NOTE_COUNT,
     n.GVHD_ASSESSMENT_COUNT,
     n.LATEST_NOTE_DATE,
     n.LATEST_NOTE_TEXT
     
-FROM TRANSPLANT_OUTCOMES t
+FROM MARROWCO_DONOR_LAB.HOL.TRANSPLANT_OUTCOMES t
 LEFT JOIN (
     SELECT 
         TRANSPLANT_ID,
         COUNT(*) AS NOTE_COUNT,
         COUNT(CASE WHEN NOTE_TYPE = 'GVHD_ASSESSMENT' THEN 1 END) AS GVHD_ASSESSMENT_COUNT,
         MAX(NOTE_DATE) AS LATEST_NOTE_DATE,
-        -- Get the most recent note text
         MAX_BY(NOTE_TEXT, NOTE_DATE) AS LATEST_NOTE_TEXT
-    FROM CLINICAL_NOTES
+    FROM MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES
     GROUP BY TRANSPLANT_ID
 ) n ON t.TRANSPLANT_ID = n.TRANSPLANT_ID;
 
@@ -193,20 +201,15 @@ LEFT JOIN (
 -- ║ Snowflake detects the dependency and manages the refresh order.          ║
 -- ║                                                                          ║
 -- ║ KEY INSIGHT: This is the table that feeds the Semantic View.            ║
--- ║ The Semantic View then becomes the single source of truth for:           ║
--- ║   • Cortex Analyst (structured Q&A)                                     ║
--- ║   • Snowflake Intelligence (auto-generated insights)                    ║
--- ║   • Streamlit dashboards                                                ║
--- ║   • Any future BI tool or API consumer                                  ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 CREATE OR REPLACE DYNAMIC TABLE DT_GVHD_ANALYTICS
     TARGET_LAG = '1 MINUTE'
-    WAREHOUSE = MARROWCO_HOL_WH
+    WAREHOUSE = IDENTIFIER('MARROWCO_HOL_WH_' || $USER_NUM)
     COMMENT = 'Gold layer: Pre-aggregated GVHD analytics for BI and AI consumption'
 AS
 SELECT
-    -- ── Dimensions ──
+    -- Dimensions
     DONOR_TYPE,
     DONOR_TYPE_LABEL,
     DIAGNOSIS_CATEGORY,
@@ -222,7 +225,7 @@ SELECT
     DATE_TRUNC('MONTH', TRANSPLANT_DATE)::DATE AS TRANSPLANT_MONTH,
     YEAR(TRANSPLANT_DATE) AS TRANSPLANT_YEAR,
     
-    -- ── Measures ──
+    -- Measures
     COUNT(*) AS TRANSPLANT_COUNT,
     
     -- GVHD metrics
@@ -259,7 +262,7 @@ GROUP BY ALL;
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 -- Check pipeline status
-SHOW DYNAMIC TABLES IN SCHEMA MARROWCO_DONOR_LAB.HOL;
+SHOW DYNAMIC TABLES;
 
 -- Verify Silver layer
 SELECT 
@@ -267,7 +270,7 @@ SELECT
     COUNT(DISTINCT TRANSPLANT_ID) AS UNIQUE_TRANSPLANTS,
     COUNT(DISTINCT AGE_GROUP) AS AGE_GROUPS,
     COUNT(DISTINCT RISK_TIER) AS RISK_TIERS,
-    '✅ Silver layer (DT_TRANSPLANT_ENRICHED) ready' AS STATUS
+    'Silver layer (DT_TRANSPLANT_ENRICHED) ready' AS STATUS
 FROM DT_TRANSPLANT_ENRICHED;
 
 -- Verify Gold layer
@@ -275,5 +278,5 @@ SELECT
     COUNT(*) AS AGGREGATE_ROWS,
     SUM(TRANSPLANT_COUNT) AS TOTAL_TRANSPLANTS,
     COUNT(DISTINCT DONOR_TYPE) AS DONOR_TYPES,
-    '✅ Gold layer (DT_GVHD_ANALYTICS) ready' AS STATUS
+    'Gold layer (DT_GVHD_ANALYTICS) ready' AS STATUS
 FROM DT_GVHD_ANALYTICS;

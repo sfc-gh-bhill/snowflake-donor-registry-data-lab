@@ -21,7 +21,7 @@ if session:
     try:
         tx_count = session.sql("SELECT COUNT(*) FROM MARROWCO_DONOR_LAB.HOL.TRANSPLANT_OUTCOMES").collect()[0][0]
         note_count = session.sql("SELECT COUNT(*) FROM MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES").collect()[0][0]
-        dt_count = session.sql("SELECT COUNT(*) FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED").collect()[0][0]
+        dt_count = session.sql("SELECT COUNT(*) FROM DT_TRANSPLANT_ENRICHED").collect()[0][0]
         donor_types = session.sql(
             "SELECT DONOR_TYPE, COUNT(*) AS CNT FROM MARROWCO_DONOR_LAB.HOL.TRANSPLANT_OUTCOMES GROUP BY 1 ORDER BY 2 DESC"
         ).to_pandas()

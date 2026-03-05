@@ -4,6 +4,8 @@ entities:
     type: streamlit
     identifier:
       name: CELL_THERAPY_COMPASS
+      # Default: single-user mode deploys to HOL schema
+      # Multi-user: override via CLI flags (see deploy commands below)
       schema: HOL
       database: MARROWCO_DONOR_LAB
     title: "LSC: Cell Therapy Compass"
@@ -17,3 +19,44 @@ entities:
       - pages/
       - utils/
       - assets/
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEPLOYMENT INSTRUCTIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# SINGLE-USER MODE (default):
+#   snow streamlit deploy --replace -c DEMO \
+#     --project streamlit/ \
+#     --role MARROWCO_HOL_ROLE \
+#     --database MARROWCO_DONOR_LAB \
+#     --schema HOL
+#
+# MULTI-USER MODE (per-participant):
+#   Replace <NN> with the participant's assigned number (01-20).
+#
+#   snow streamlit deploy --replace -c DEMO \
+#     --project streamlit/ \
+#     --role MARROWCO_HOL_ROLE_<NN> \
+#     --database MARROWCO_DONOR_LAB \
+#     --schema HOL_USER_<NN>
+#
+#   Example for participant 03:
+#   snow streamlit deploy --replace -c DEMO \
+#     --project streamlit/ \
+#     --role MARROWCO_HOL_ROLE_03 \
+#     --database MARROWCO_DONOR_LAB \
+#     --schema HOL_USER_03
+#
+#   The CLI flags override the schema and warehouse settings above.
+#   Each participant's app deploys to their own schema with isolated
+#   compute (per-user warehouse) and isolated objects (DTs, agents, etc).
+#
+# BATCH DEPLOY (admin deploys for all participants):
+#   for i in $(seq -w 1 10); do
+#     snow streamlit deploy --replace -c DEMO \
+#       --project streamlit/ \
+#       --role MARROWCO_HOL_ROLE_${i} \
+#       --database MARROWCO_DONOR_LAB \
+#       --schema HOL_USER_${i}
+#   done
+# ═══════════════════════════════════════════════════════════════════════════════

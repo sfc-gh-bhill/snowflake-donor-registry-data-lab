@@ -22,6 +22,17 @@ session = get_snowflake_session()
 AGENT_API_ENDPOINT = "/api/v2/cortex/agent:run"
 AGENT_API_TIMEOUT_MS = 60000
 
+# ── Resolve per-user schema for agent tool_resources ──
+_DB = "MARROWCO_DONOR_LAB"
+_SCHEMA = "HOL"
+if session:
+    try:
+        _DB = session.get_current_database() or _DB
+        _SCHEMA = session.get_current_schema() or _SCHEMA
+    except Exception:
+        pass
+_FQN_PREFIX = f"{_DB}.{_SCHEMA}"
+
 
 def _extract_from_event(data: dict, text_parts: list, sql_parts: list):
     """Extract text and SQL from a single event dict in any known format."""
@@ -122,10 +133,10 @@ def call_agent_api(session, user_query: str) -> dict:
             ],
             "tool_resources": {
                 "transplant_analyst": {
-                    "semantic_view": "MARROWCO_DONOR_LAB.HOL.MARROWCO_TRANSPLANT_ANALYTICS"
+                    "semantic_view": f"{_FQN_PREFIX}.MARROWCO_TRANSPLANT_ANALYTICS"
                 },
                 "clinical_notes_search": {
-                    "name": "MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES_SEARCH",
+                    "name": f"{_FQN_PREFIX}.CLINICAL_NOTES_SEARCH",
                     "max_results": 5
                 }
             }
@@ -382,20 +393,20 @@ st.markdown(render_section_separator(
     "The full agent experience with auto-suggested questions, charts, and conversation history"
 ), unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <div style="background: linear-gradient(145deg, #1a1f35 0%, #0d1117 100%); border-radius: 16px;
             padding: 1.5rem 2rem; border: 1px solid rgba(41,181,232,0.3); margin: 1rem 0;">
     <p style="color: #FAFAFA; font-size: 0.95rem; line-height: 1.6;">
         For the full agent experience, use <strong style="color: #29B5E8;">Snowflake Intelligence</strong>:
     </p>
     <ol style="color: #8892b0; font-size: 0.85rem; line-height: 1.8; padding-left: 1.5rem;">
-        <li>Navigate to <strong>AI & ML > Snowflake Intelligence</strong> in Snowsight</li>
+        <li>Navigate to <strong>AI &amp; ML &gt; Snowflake Intelligence</strong> in Snowsight</li>
         <li>Click <strong>"New Analyst"</strong> and select <strong>"Use an Agent"</strong></li>
-        <li>Choose <strong>MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT</strong></li>
+        <li>Choose your agent: <strong>{_FQN_PREFIX}.MARROWCO_RESEARCH_AGENT</strong></li>
         <li>Verified queries appear as suggested questions automatically</li>
     </ol>
     <p style="color: #00D4AA; font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;">
-        Snowflake Intelligence shows the WHO, WHAT, WHERE, WHEN, WHY, and HOW — 
+        Snowflake Intelligence shows the WHO, WHAT, WHERE, WHEN, WHY, and HOW —
         plus actionable recommendations. No other BI tool does this.
     </p>
 </div>
