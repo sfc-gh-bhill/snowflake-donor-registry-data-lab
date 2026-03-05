@@ -1,0 +1,5 @@
+name: marrowco_cell_therapy_compass
+channels:
+  - snowflake
+dependencies:
+  - streamlit
