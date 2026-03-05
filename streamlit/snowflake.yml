@@ -1,0 +1,19 @@
+definition_version: 2
+entities:
+  cell_therapy_compass:
+    type: streamlit
+    identifier:
+      name: CELL_THERAPY_COMPASS
+      schema: HOL
+      database: MARROWCO_DONOR_LAB
+    title: "LSC: Cell Therapy Compass"
+    comment: "Transplant outcome analytics powered by Snowflake AI Data Cloud"
+    query_warehouse: MARROWCO_HOL_WH
+    main_file: streamlit_app.py
+    pages_dir: pages/
+    artifacts:
+      - streamlit_app.py
+      - environment.yml
+      - pages/
+      - utils/
+      - assets/

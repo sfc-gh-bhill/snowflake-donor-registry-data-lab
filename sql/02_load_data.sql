@@ -25,12 +25,17 @@ USE SCHEMA MARROWCO_DONOR_LAB.HOL;
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ OPTION B: Upload via SnowSQL CLI (run in your terminal, NOT in a SQL     ║
--- ║ worksheet). Replace the file paths with your local paths.                ║
+-- ║ OPTION B: Upload via Snow CLI (run in your terminal, NOT in a SQL        ║
+-- ║ worksheet). Run from the repo root directory.                            ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║                                                                          ║
--- ║   PUT file:///path/to/transplant_outcomes.csv @DATA_STAGE AUTO_COMPRESS=TRUE;
--- ║   PUT file:///path/to/clinical_notes.csv @DATA_STAGE AUTO_COMPRESS=TRUE; ║
+-- ║   snow stage copy data/transplant_outcomes.csv                           ║
+-- ║     @MARROWCO_DONOR_LAB.HOL.DATA_STAGE --overwrite                      ║
+-- ║     -c <your_connection> --role MARROWCO_HOL_ROLE                        ║
+-- ║                                                                          ║
+-- ║   snow stage copy data/clinical_notes.csv                                ║
+-- ║     @MARROWCO_DONOR_LAB.HOL.DATA_STAGE --overwrite                      ║
+-- ║     -c <your_connection> --role MARROWCO_HOL_ROLE                        ║
 -- ║                                                                          ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 

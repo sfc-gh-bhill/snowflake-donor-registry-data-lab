@@ -32,3 +32,6 @@ env/
 # Environment files
 .env
 .env.local
+
+# Snow CLI build artifacts
+output/

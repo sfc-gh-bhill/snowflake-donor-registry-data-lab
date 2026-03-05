@@ -9,6 +9,7 @@
   All data, models, agents, and objects will be permanently deleted.
   
   What this removes:
+    - Streamlit App:  CELL_THERAPY_COMPASS
     - Agent:          MARROWCO_RESEARCH_AGENT
     - ML Model:       GVHD_RISK_MODEL
     - Semantic View:  MARROWCO_TRANSPLANT_ANALYTICS

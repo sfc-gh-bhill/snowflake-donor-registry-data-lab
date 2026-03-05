@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-from utils.styles import apply_styles, render_header, render_metric_card, render_feature_card, MARROWCO_LOGO_BYTES
+from utils.styles import apply_styles, render_header, render_metric_card, render_feature_card, tooltip
 from utils.navigation import render_sidebar, render_nav_buttons, get_snowflake_session
 import base64, os, pathlib
 
@@ -57,7 +57,7 @@ if _banner_b64:
             </p>
             <p style="color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0.75rem 0 0 0;
                        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
-                Donor for All Data Lab &mdash; Forecasting GVHD with The Winter Cloud Platform Intelligence
+                Donor for All Data Lab &mdash; Forecasting GVHD with Snowflake Intelligence
             </p>
         </div>
     </div>
@@ -71,33 +71,54 @@ else:
             Outcome Forecasting with Multimodal Data
         </p>
         <p style="font-size:0.9rem; margin-top:0.5rem;">
-            Donor for All Data Lab &mdash; Forecasting GVHD with The Winter Cloud Platform Intelligence
+            Donor for All Data Lab &mdash; Forecasting GVHD with Snowflake Intelligence
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-# --- Placeholder KPI Tiles ---
+# --- Live KPI Tiles ---
 session = get_snowflake_session()
+
+kpi_donors = "--"
+kpi_transplants = "--"
+kpi_models = "1"
+kpi_sources = "4"
+kpi_donors_delta = ""
+kpi_transplants_delta = ""
+
+if session:
+    try:
+        row = session.sql("""
+            SELECT COUNT(DISTINCT DONOR_ID) AS DONORS,
+                   COUNT(*) AS TRANSPLANTS
+            FROM MARROWCO_DONOR_LAB.HOL.DT_TRANSPLANT_ENRICHED
+        """).collect()[0]
+        kpi_donors = f"{row['DONORS']:,}"
+        kpi_transplants = f"{row['TRANSPLANTS']:,}"
+        kpi_donors_delta = "Live from Snowflake"
+        kpi_transplants_delta = "Live from Snowflake"
+    except Exception:
+        pass
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.markdown(render_metric_card("--", "Donors Registered", "Placeholder"), unsafe_allow_html=True)
+    st.markdown(render_metric_card(kpi_donors, "Donors Registered", kpi_donors_delta), unsafe_allow_html=True)
 with col2:
-    st.markdown(render_metric_card("--", "Transplants Tracked", "Placeholder"), unsafe_allow_html=True)
+    st.markdown(render_metric_card(kpi_transplants, "Transplants Tracked", kpi_transplants_delta), unsafe_allow_html=True)
 with col3:
-    st.markdown(render_metric_card("--", "GVHD Models", "Placeholder"), unsafe_allow_html=True)
+    st.markdown(render_metric_card(kpi_models, f"{tooltip('GVHD')} Models", "ML Classification"), unsafe_allow_html=True)
 with col4:
-    st.markdown(render_metric_card("--", "Data Sources", "Placeholder"), unsafe_allow_html=True)
+    st.markdown(render_metric_card(kpi_sources, "Data Sources", "Tables + Dynamic Tables"), unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # --- Platform Narrative (shell) ---
-st.markdown("""
+st.markdown(f"""
 <div class="section-sep">
     <h3>The Mission: Better Outcomes Through Data Intelligence</h3>
     <p style="color:#8892b0;margin:0.25rem 0 0 0;font-size:0.9rem;">
-        LSC is leveraging The Winter Cloud Platform AI Data Cloud to build predictive models for graft-versus-host
-        disease (GVHD), unify multimodal donor and patient data, and accelerate research that saves lives.
+        LSC is leveraging Snowflake AI Data Cloud to build predictive models for graft-versus-host
+        disease ({tooltip('GVHD')}), unify multimodal donor and patient data, and accelerate research that saves lives.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -121,7 +142,7 @@ with col1:
         """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown("#### Solution: The Winter Cloud Platform AI Data Cloud")
+    st.markdown("#### Solution: Snowflake AI Data Cloud")
     solutions = [
         ("Unified Data Estate", "Donor, patient, genomic, and outcome data consolidated in a governed medallion architecture"),
         ("Predictive Intelligence", "Cortex AI and ML models forecast GVHD risk using multimodal features"),
@@ -142,7 +163,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("### Explore the Compass")
 st.markdown("""
 <p style="color:#8892b0;font-size:0.9rem;">
-Navigate through the Cell Therapy Compass to explore how The Winter Cloud Platform powers every stage of
+Navigate through the Cell Therapy Compass to explore how Snowflake powers every stage of
 donor matching, outcome prediction, and research collaboration.
 </p>
 """, unsafe_allow_html=True)
@@ -171,10 +192,10 @@ st.markdown("<br>", unsafe_allow_html=True)
 # --- Presenter Info ---
 with st.expander("Presenter Notes"):
     st.markdown("""
-    **Presenter:** Braedon Hill, Sr. Solution Engineer — The Winter Cloud Platform
+    **Presenter:** Braedon Hill, Sr. Solution Engineer — Snowflake
     
     **Key Message:** LSC's mission to match every patient with a life-saving donor is powered by data. 
-    The Winter Cloud Platform AI Data Cloud unifies donor registries, transplant outcomes, genomic data, and clinical 
+    Snowflake AI Data Cloud unifies donor registries, transplant outcomes, genomic data, and clinical 
     records into a single governed platform — enabling predictive GVHD models, secure multi-institutional 
     collaboration, and AI-driven insights that improve patient outcomes.
     

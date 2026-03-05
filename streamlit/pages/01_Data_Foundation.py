@@ -7,6 +7,7 @@ from utils.styles import (
     render_info_callout, render_success_callout, render_sql_block, render_section_separator
 )
 from utils.navigation import render_sidebar, render_nav_buttons, get_snowflake_session
+import streamlit.components.v1 as components
 
 apply_styles()
 render_sidebar("Data Foundation")
@@ -52,15 +53,17 @@ st.markdown(render_section_separator(
     "Medallion architecture powered by Dynamic Tables for near real-time analytics"
 ), unsafe_allow_html=True)
 
-st.markdown("""
+components.html("""<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>body { margin: 0; padding: 0; background: transparent; font-family: 'Segoe UI', Arial, sans-serif; }</style>
+</head><body>
 <div style="background: linear-gradient(145deg, #1a1f35 0%, #0d1117 100%); border-radius: 16px;
-            padding: 2rem; border: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;">
+            padding: 2rem; border: 1px solid rgba(255,255,255,0.1); margin: 0;">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <!-- Bronze -->
         <div style="flex: 1; min-width: 200px; text-align: center;">
             <div style="background: linear-gradient(135deg, #CD7F32, #8B4513); padding: 1.25rem;
                         border-radius: 12px; margin-bottom: 0.5rem;">
-                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🥉</div>
+                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">&#x1F949;</div>
                 <div style="color: white; font-weight: 700; font-size: 1rem;">Bronze Layer</div>
                 <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; margin-top: 0.25rem;">Raw Data</div>
             </div>
@@ -68,15 +71,11 @@ st.markdown("""
                 TRANSPLANT_OUTCOMES<br>CLINICAL_NOTES
             </div>
         </div>
-
-        <!-- Arrow -->
-        <div style="color: #29B5E8; font-size: 2rem; font-weight: 700;">→</div>
-
-        <!-- Silver -->
+        <div style="color: #29B5E8; font-size: 2rem; font-weight: 700;">&rarr;</div>
         <div style="flex: 1; min-width: 200px; text-align: center;">
             <div style="background: linear-gradient(135deg, #C0C0C0, #808080); padding: 1.25rem;
                         border-radius: 12px; margin-bottom: 0.5rem;">
-                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🥈</div>
+                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">&#x1F948;</div>
                 <div style="color: white; font-weight: 700; font-size: 1rem;">Silver Layer</div>
                 <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; margin-top: 0.25rem;">Dynamic Table</div>
             </div>
@@ -84,15 +83,11 @@ st.markdown("""
                 DT_TRANSPLANT_ENRICHED<br>Auto-refresh: 1 min
             </div>
         </div>
-
-        <!-- Arrow -->
-        <div style="color: #29B5E8; font-size: 2rem; font-weight: 700;">→</div>
-
-        <!-- Gold -->
+        <div style="color: #29B5E8; font-size: 2rem; font-weight: 700;">&rarr;</div>
         <div style="flex: 1; min-width: 200px; text-align: center;">
             <div style="background: linear-gradient(135deg, #FFD700, #DAA520); padding: 1.25rem;
                         border-radius: 12px; margin-bottom: 0.5rem;">
-                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🥇</div>
+                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">&#x1F947;</div>
                 <div style="color: white; font-weight: 700; font-size: 1rem;">Gold Layer</div>
                 <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; margin-top: 0.25rem;">Dynamic Table</div>
             </div>
@@ -100,15 +95,11 @@ st.markdown("""
                 DT_GVHD_ANALYTICS<br>Pre-aggregated metrics
             </div>
         </div>
-
-        <!-- Arrow -->
-        <div style="color: #29B5E8; font-size: 2rem; font-weight: 700;">→</div>
-
-        <!-- Semantic View -->
+        <div style="color: #29B5E8; font-size: 2rem; font-weight: 700;">&rarr;</div>
         <div style="flex: 1; min-width: 200px; text-align: center;">
             <div style="background: linear-gradient(135deg, #29B5E8, #11567F); padding: 1.25rem;
                         border-radius: 12px; margin-bottom: 0.5rem;">
-                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🧠</div>
+                <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">&#x1F9E0;</div>
                 <div style="color: white; font-weight: 700; font-size: 1rem;">Semantic View</div>
                 <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; margin-top: 0.25rem;">Single Source of Truth</div>
             </div>
@@ -118,7 +109,7 @@ st.markdown("""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+</body></html>""", height=220, scrolling=False)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
@@ -137,7 +128,7 @@ st.markdown(render_pipeline_step(3, "Gold: DT_GVHD_ANALYTICS",
 
 st.markdown(render_info_callout(
     "Why Dynamic Tables over traditional ETL?",
-    "Dynamic Tables are declarative — you define the SQL transformation and The Winter Cloud Platform handles the rest. "
+    "Dynamic Tables are declarative — you define the SQL transformation and Snowflake handles the rest. "
     "No Informatica, no Airflow, no dbt. The pipeline DAG is managed automatically. "
     "When source data changes, downstream tables refresh within the target lag (1 minute). "
     "This replaces the batch ETL pattern that Looker and Oracle OBIEE depend on."
@@ -156,7 +147,7 @@ if live_data:
         df = session.sql("SELECT * FROM MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES LIMIT 20").to_pandas()
         st.dataframe(df, use_container_width=True, height=400)
 else:
-    st.info("Connect to The Winter Cloud Platform to view live data. Run the SQL scripts in sql/ to load data first.")
+    st.info("Connect to Snowflake to view live data. Run the SQL scripts in sql/ to load data first.")
     st.markdown(render_sql_block(
         "-- Quick peek at the data structure\n"
         "SELECT * FROM MARROWCO_DONOR_LAB.HOL.TRANSPLANT_OUTCOMES LIMIT 5;\n"

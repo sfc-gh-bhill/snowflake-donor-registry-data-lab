@@ -1,7 +1,7 @@
 /*=============================================================================
   LSC Donor for All Data Lab — Bootstrap Infrastructure
   =============================================================================
-  Run this script FIRST to create all The Winter Cloud Platform infrastructure.
+  Run this script FIRST to create all Snowflake infrastructure.
   Idempotent: safe to run multiple times.
   
   Prerequisites:
@@ -46,7 +46,7 @@ GRANT OPERATE ON WAREHOUSE MARROWCO_HOL_WH TO ROLE MARROWCO_HOL_ROLE;
 -- ║ STEP 3: Create Database and Schema                                       ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 CREATE DATABASE IF NOT EXISTS MARROWCO_DONOR_LAB
-    COMMENT = 'LSC Donor for All Data Lab — Forecasting GVHD with The Winter Cloud Platform Intelligence';
+    COMMENT = 'LSC Donor for All Data Lab — Forecasting GVHD with Snowflake Intelligence';
 
 GRANT OWNERSHIP ON DATABASE MARROWCO_DONOR_LAB TO ROLE MARROWCO_HOL_ROLE
     COPY CURRENT GRANTS;
@@ -101,9 +101,8 @@ GRANT EXECUTE MANAGED TASK ON ACCOUNT TO ROLE MARROWCO_HOL_ROLE;
 -- Cortex AI features
 GRANT CREATE CORTEX SEARCH SERVICE ON SCHEMA MARROWCO_DONOR_LAB.HOL TO ROLE MARROWCO_HOL_ROLE;
 
--- The Winter Cloud Platform Intelligence / Agents
+-- Snowflake Intelligence / Agents
 GRANT CREATE AGENT ON SCHEMA MARROWCO_DONOR_LAB.HOL TO ROLE MARROWCO_HOL_ROLE;
-GRANT SNOWFLAKE.INTELLIGENCE.USE_AGENT ON ACCOUNT TO ROLE MARROWCO_HOL_ROLE;
 
 -- Semantic Views
 GRANT CREATE SEMANTIC VIEW ON SCHEMA MARROWCO_DONOR_LAB.HOL TO ROLE MARROWCO_HOL_ROLE;

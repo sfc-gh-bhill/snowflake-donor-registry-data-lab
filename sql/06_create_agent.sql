@@ -33,7 +33,7 @@
   │ (unstructured) and combines both into one answer.                       │
   │                                                                        │
   │ UNLIKE TRADITIONAL BI:                                                  │
-  │ The Winter Cloud Platform can answer WHO, WHAT, WHERE, WHEN, WHY... and also HOW      │
+  │ Snowflake can answer WHO, WHAT, WHERE, WHEN, WHY... and also HOW      │
   │ and provide RECOMMENDATIONS — because it combines structured data      │
   │ analytics with unstructured clinical intelligence and web research.    │
   └─────────────────────────────────────────────────────────────────────────┘
@@ -146,32 +146,25 @@ DESCRIBE AGENT MARROWCO_RESEARCH_AGENT;
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Test the Agent (run these interactively)                                 ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║ You can also test via The Winter Cloud Platform Intelligence UI:                         ║
--- ║   1. Go to AI & ML > The Winter Cloud Platform Intelligence                             ║
+-- ║ You can also test via Snowflake Intelligence UI:                         ║
+-- ║   1. Go to AI & ML > Snowflake Intelligence                             ║
 -- ║   2. Create a new Analyst and select MARROWCO_RESEARCH_AGENT                ║
 -- ║   3. The verified queries will appear as suggested questions             ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
--- Test 1: Structured data query (should use cortex_analyst)
--- SELECT SNOWFLAKE.CORTEX.INVOKE_AGENT(
---     'MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT',
---     'What is the overall GVHD rate by donor type?'
--- );
-
--- Test 2: Unstructured search (should use cortex_search)
--- SELECT SNOWFLAKE.CORTEX.INVOKE_AGENT(
---     'MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT',
---     'What do clinical notes say about patients who responded well to ruxolitinib for severe GVHD?'
--- );
-
--- Test 3: Combined (should use both tools)
--- SELECT SNOWFLAKE.CORTEX.INVOKE_AGENT(
---     'MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT',
---     'Compare haploidentical vs MUD survival rates and find clinical evidence supporting PTCy-based prophylaxis'
--- );
-
--- Test 4: Visualization (should use data_to_chart)
--- SELECT SNOWFLAKE.CORTEX.INVOKE_AGENT(
---     'MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT',
---     'Create a bar chart comparing 1-year survival rates by donor type'
--- );
+-- ═══════════════════════════════════════════════════════════════════════════
+-- HOW TO TEST THE AGENT
+-- ═══════════════════════════════════════════════════════════════════════════
+-- The agent is accessed via:
+--   1. Snowflake Intelligence UI (AI & ML > Snowflake Intelligence)
+--   2. The Cell Therapy Compass Streamlit app (Research Agent page)
+--   3. The REST API: POST /api/v2/cortex/agent:run
+--
+-- Try these questions in Snowflake Intelligence or the Streamlit app:
+--
+--   Structured: "What is the overall GVHD rate by donor type?"
+--   Unstructured: "What do clinical notes say about ruxolitinib for severe GVHD?"
+--   Combined: "Compare haploidentical vs MUD survival and find clinical evidence for PTCy"
+--   Chart: "Create a bar chart comparing 1-year survival rates by donor type"
+--   Web Search: "Search for latest 2024-2025 publications on GVHD prevention with PTCy"
+-- ═══════════════════════════════════════════════════════════════════════════

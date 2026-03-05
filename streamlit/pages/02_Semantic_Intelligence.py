@@ -8,6 +8,7 @@ from utils.styles import (
     render_section_separator, render_pipeline_step
 )
 from utils.navigation import render_sidebar, render_nav_buttons, get_snowflake_session
+import streamlit.components.v1 as components
 
 apply_styles()
 render_sidebar("Semantic Intelligence")
@@ -35,19 +36,22 @@ st.markdown(render_section_separator(
     "The semantic layer that sits between your data and every consumer — AI agents, dashboards, and analysts"
 ), unsafe_allow_html=True)
 
-st.markdown("""
+components.html("""<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>body { margin: 0; padding: 0; background: transparent; font-family: 'Segoe UI', Arial, sans-serif; }</style>
+</head><body>
 <div style="background: linear-gradient(145deg, #1a1f35 0%, #0d1117 100%); border-radius: 16px;
-            padding: 2rem; border: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;">
+            padding: 2rem; border: 1px solid rgba(255,255,255,0.1); margin: 0;">
     <p style="color: #FAFAFA; font-size: 0.95rem; line-height: 1.8;">
-        A <strong style="color: #29B5E8;">Semantic View</strong> is a native The Winter Cloud Platform object that defines:
+        A <strong style="color: #29B5E8;">Semantic View</strong> is a native Snowflake object that defines:
     </p>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
         <div style="background: rgba(41,181,232,0.1); border-radius: 10px; padding: 1rem;">
-            <div style="color: #29B5E8; font-weight: 700;">Tables & Relationships</div>
+            <div style="color: #29B5E8; font-weight: 700;">Tables &amp; Relationships</div>
             <div style="color: #8892b0; font-size: 0.8rem; margin-top: 0.25rem;">Which physical tables participate and how they join</div>
         </div>
         <div style="background: rgba(0,212,170,0.1); border-radius: 10px; padding: 1rem;">
-            <div style="color: #00D4AA; font-weight: 700;">Dimensions & Facts</div>
+            <div style="color: #00D4AA; font-weight: 700;">Dimensions &amp; Facts</div>
             <div style="color: #8892b0; font-size: 0.8rem; margin-top: 0.25rem;">Categorical columns (dimensions) and numeric measures (facts)</div>
         </div>
         <div style="background: rgba(255,183,77,0.1); border-radius: 10px; padding: 1rem;">
@@ -68,14 +72,14 @@ st.markdown("""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+</body></html>""", height=340, scrolling=False)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ── Comparison: The Winter Cloud Platform vs Looker vs Oracle OBIEE ──
+# ── Comparison: Snowflake vs Looker vs Oracle OBIEE ──
 st.markdown(render_section_separator(
     "How Does This Compare?",
-    "The Winter Cloud Platform Semantic Views vs Looker LookML vs Oracle OBIEE"
+    "Snowflake Semantic Views vs Looker LookML vs Oracle OBIEE"
 ), unsafe_allow_html=True)
 
 comparison_data = [
@@ -85,38 +89,43 @@ comparison_data = [
     ("Unstructured Data", "Yes — pairs with Cortex Search", "No — structured only", "No — structured only"),
     ("Real-Time Pipeline", "Dynamic Tables (1-min lag)", "Batch extract/PDTs", "ETL batch (Informatica)"),
     ("Verified Queries", "Yes — trust layer", "No equivalent", "No equivalent"),
-    ("Auto Suggestions", "Yes — The Winter Cloud Platform Intelligence", "No", "No"),
+    ("Auto Suggestions", "Yes — Snowflake Intelligence", "No", "No"),
     ("Version Control", "Git-friendly SQL", "Git possible but complex", "Binary — not git-friendly"),
-    ("Licensing", "Included with The Winter Cloud Platform", "Separate Looker license", "Separate Oracle license"),
+    ("Licensing", "Included with Snowflake", "Separate Looker license", "Separate Oracle license"),
     ("Skill Required", "SQL (any analyst)", "LookML developer", "OBIEE RPD specialist"),
 ]
 
-st.markdown("""
+_comparison_rows = "".join([
+    f'<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">'
+    f'<td style="padding: 0.6rem 1rem; color: #FAFAFA; font-size: 0.8rem; font-weight: 600;">{cap}</td>'
+    f'<td style="padding: 0.6rem 1rem; color: #00D4AA; font-size: 0.8rem;">{sf}</td>'
+    f'<td style="padding: 0.6rem 1rem; color: #8892b0; font-size: 0.8rem;">{lk}</td>'
+    f'<td style="padding: 0.6rem 1rem; color: #8892b0; font-size: 0.8rem;">{ob}</td>'
+    f'</tr>'
+    for cap, sf, lk, ob in comparison_data
+])
+
+components.html(f"""<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>body {{ margin: 0; padding: 0; background: transparent; font-family: 'Segoe UI', Arial, sans-serif; }}</style>
+</head><body>
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; background: linear-gradient(145deg, #1a1f35 0%, #0d1117 100%);
               border-radius: 12px; overflow: hidden;">
     <thead>
         <tr style="background: linear-gradient(135deg, #29B5E8, #11567F);">
             <th style="padding: 0.75rem 1rem; text-align: left; color: white; font-size: 0.85rem;">Capability</th>
-            <th style="padding: 0.75rem 1rem; text-align: left; color: white; font-size: 0.85rem;">The Winter Cloud Platform Semantic View</th>
+            <th style="padding: 0.75rem 1rem; text-align: left; color: white; font-size: 0.85rem;">Snowflake Semantic View</th>
             <th style="padding: 0.75rem 1rem; text-align: left; color: white; font-size: 0.85rem;">Looker LookML</th>
             <th style="padding: 0.75rem 1rem; text-align: left; color: white; font-size: 0.85rem;">Oracle OBIEE</th>
         </tr>
     </thead>
     <tbody>
-""" + "".join([
-    f"""<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-        <td style="padding: 0.6rem 1rem; color: #FAFAFA; font-size: 0.8rem; font-weight: 600;">{cap}</td>
-        <td style="padding: 0.6rem 1rem; color: #00D4AA; font-size: 0.8rem;">{sf}</td>
-        <td style="padding: 0.6rem 1rem; color: #8892b0; font-size: 0.8rem;">{lk}</td>
-        <td style="padding: 0.6rem 1rem; color: #8892b0; font-size: 0.8rem;">{ob}</td>
-    </tr>"""
-    for cap, sf, lk, ob in comparison_data
-]) + """
+{_comparison_rows}
     </tbody>
 </table>
 </div>
-""", unsafe_allow_html=True)
+</body></html>""", height=480, scrolling=False)
 
 st.markdown(render_success_callout(
     "The Key Insight",
@@ -139,15 +148,15 @@ st.markdown(render_pipeline_step(1, "Raw Data Lands",
 st.markdown(render_pipeline_step(2, "Silver Refreshes Automatically",
     "DT_TRANSPLANT_ENRICHED detects changes and refreshes within 1 minute — no scheduler needed"), unsafe_allow_html=True)
 st.markdown(render_pipeline_step(3, "Gold Cascades",
-    "DT_GVHD_ANALYTICS auto-refreshes because The Winter Cloud Platform manages the dependency DAG"), unsafe_allow_html=True)
+    "DT_GVHD_ANALYTICS auto-refreshes because Snowflake manages the dependency DAG"), unsafe_allow_html=True)
 st.markdown(render_pipeline_step(4, "Semantic View Reflects Current Data",
-    "Cortex Analyst, The Winter Cloud Platform Intelligence, and this Streamlit app all see the latest data"), unsafe_allow_html=True)
+    "Cortex Analyst, Snowflake Intelligence, and this Streamlit app all see the latest data"), unsafe_allow_html=True)
 
 st.markdown(render_info_callout(
     "Compare this to Looker",
     "In Looker, you would need: an ETL tool (Informatica/Fivetran) to extract data, "
     "a dbt/PDT layer to transform it, a scheduling system (cron/Airflow) to orchestrate, "
-    "and a LookML developer to maintain the model. With The Winter Cloud Platform: one Dynamic Table SQL statement does it all."
+    "and a LookML developer to maintain the model. With Snowflake: one Dynamic Table SQL statement does it all."
 ), unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -229,7 +238,7 @@ if selected_query:
             except Exception as e:
                 st.error(f"Query failed: {e}")
     else:
-        st.info("Connect to The Winter Cloud Platform to run queries live.")
+        st.info("Connect to Snowflake to run queries live.")
 
 # ── Nav ──
 st.markdown("---")

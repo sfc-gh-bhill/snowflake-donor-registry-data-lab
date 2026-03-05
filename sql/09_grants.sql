@@ -13,7 +13,7 @@ USE ROLE ACCOUNTADMIN;
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Grant MARROWCO_HOL_ROLE to additional users                                  ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║ Replace '<USERNAME>' with the actual The Winter Cloud Platform username                  ║
+-- ║ Replace '<USERNAME>' with the actual Snowflake username                  ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 -- GRANT ROLE MARROWCO_HOL_ROLE TO USER <USERNAME>;
@@ -30,9 +30,14 @@ GRANT DATABASE ROLE SNOWFLAKE.CORTEX_USER TO ROLE MARROWCO_HOL_ROLE;
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ NOTE: This requires ACCOUNTADMIN and enables web search for the entire   ║
 -- ║ account. Only run if your organization approves external web access.     ║
+-- ║                                                                          ║
+-- ║ The Research Agent includes a web_search tool for finding latest GVHD    ║
+-- ║ research and clinical trial publications. Without this parameter,        ║
+-- ║ web search queries will return an error.                                 ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
--- ALTER ACCOUNT SET CORTEX_AGENT_WEB_SEARCH_ENABLED = TRUE;
+-- Uncomment the line below to enable web search for Cortex Agents:
+-- ALTER ACCOUNT SET ENABLE_CORTEX_WEBSEARCH = TRUE;
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Streamlit deployment grants                                              ║
