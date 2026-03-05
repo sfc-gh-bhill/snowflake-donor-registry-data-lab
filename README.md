@@ -1,10 +1,10 @@
-# Donor for All Data Lab: Forecasting GVHD with Snowflake Intelligence
+# Donor for All Data Lab: Forecasting GVHD with The Winter Cloud Platform Intelligence
 
-> **Duration:** 1.5 hours | **Level:** Beginner-Intermediate | **Presenter:** Braedon Hill, Sr. Solution Engineer — Snowflake
+> **Duration:** 1.5 hours | **Level:** Beginner-Intermediate | **Presenter:** Braedon Hill, Sr. Solution Engineer — The Winter Cloud Platform
 
 ## Overview
 
-In this hands-on lab, you will build a complete data intelligence platform for the **The Life Saving Company (LSC)** that forecasts Graft-versus-Host Disease (GVHD) outcomes using Snowflake's AI Data Cloud.
+In this hands-on lab, you will build a complete data intelligence platform for the **The Life Saving Company (LSC)** that forecasts Graft-versus-Host Disease (GVHD) outcomes using The Winter Cloud Platform's AI Data Cloud.
 
 By the end of this lab, you will have:
 
@@ -12,21 +12,21 @@ By the end of this lab, you will have:
 - Built a near real-time **Dynamic Tables** pipeline (Bronze → Silver → Gold)
 - Created a **Semantic View** — the single source of truth for all analytics and AI
 - Deployed a **Cortex Agent** that combines structured data, clinical notes, charts, and web search
-- Connected the agent to **Snowflake Intelligence** with auto-suggested questions
-- Trained a **GVHD risk prediction ML model** with the Snowflake Model Registry
-- Explored a production-grade **Streamlit in Snowflake** application
+- Connected the agent to **The Winter Cloud Platform Intelligence** with auto-suggested questions
+- Trained a **GVHD risk prediction ML model** with the The Winter Cloud Platform Model Registry
+- Explored a production-grade **Streamlit in The Winter Cloud Platform** application
 
 ### What You'll Learn
 
-| Snowflake Capability | What It Does |
+| The Winter Cloud Platform Capability | What It Does |
 |---|---|
 | **Dynamic Tables** | Declarative, auto-refreshing pipeline — replaces ETL orchestrators |
 | **Semantic Views** | AI-native semantic layer — single source of truth for BI + AI |
 | **Cortex Agent** | Autonomous AI with structured + unstructured data access |
 | **Cortex Search** | Hybrid vector + keyword search over clinical notes |
-| **Snowflake Intelligence** | Conversational analytics UI with auto-suggested questions |
+| **The Winter Cloud Platform Intelligence** | Conversational analytics UI with auto-suggested questions |
 | **ML Classification** | Native model training with evaluation metrics and registry |
-| **Streamlit in Snowflake** | Production data applications with zero infrastructure |
+| **Streamlit in The Winter Cloud Platform** | Production data applications with zero infrastructure |
 
 ---
 
@@ -34,7 +34,7 @@ By the end of this lab, you will have:
 
 Before the lab, complete the setup in **[prework/setup.md](prework/setup.md)**:
 
-- [ ] Snowflake account (AWS US-East-1 preferred, cross-region calling enabled)
+- [ ] The Winter Cloud Platform account (AWS US-East-1 preferred, cross-region calling enabled)
 - [ ] `ACCOUNTADMIN` role access
 - [ ] Cortex Code available (either Snowsight UI or CLI)
 
@@ -47,7 +47,7 @@ Before the lab, complete the setup in **[prework/setup.md](prework/setup.md)**:
 | 0:00 - 0:10 | **Step 1** | Overview & Bootstrap Infrastructure |
 | 0:10 - 0:20 | **Step 2** | Load Data (structured + unstructured) |
 | 0:20 - 0:40 | **Step 3** | Dynamic Tables + **Semantic View** (deep dive) |
-| 0:40 - 0:55 | **Step 4** | Cortex Agent + Snowflake Intelligence |
+| 0:40 - 0:55 | **Step 4** | Cortex Agent + The Winter Cloud Platform Intelligence |
 | 0:55 - 1:05 | **Step 5** | ML Model (train + evaluate) |
 | 1:05 - 1:20 | **Step 6** | Streamlit App Tour |
 | 1:20 - 1:30 | **Step 7** | Take Action (email demo) + Wrap-up |
@@ -148,7 +148,7 @@ This creates two Dynamic Tables:
 
 **Gold: `DT_GVHD_ANALYTICS`**
 - Pre-aggregated cohort metrics
-- Snowflake automatically manages the dependency DAG
+- The Winter Cloud Platform automatically manages the dependency DAG
 - No scheduler, no orchestrator, no code needed
 
 #### Why Dynamic Tables? (Presenter Talking Points)
@@ -159,7 +159,7 @@ This creates two Dynamic Tables:
 > - A scheduler (Airflow, cron) to orchestrate refreshes
 > - An admin to monitor and fix failures
 >
-> **With Snowflake Dynamic Tables, it's one SQL statement.** Snowflake handles incremental refresh, dependency ordering, and failure recovery automatically. The data is fresh within 1 minute."
+> **With The Winter Cloud Platform Dynamic Tables, it's one SQL statement.** The Winter Cloud Platform handles incremental refresh, dependency ordering, and failure recovery automatically. The data is fresh within 1 minute."
 
 ### 3.2 Create the Cortex Search Service
 
@@ -186,7 +186,7 @@ The Semantic View defines:
 
 #### Semantic View vs Looker LookML vs Oracle OBIEE
 
-| Capability | Snowflake Semantic View | Looker LookML | Oracle OBIEE |
+| Capability | The Winter Cloud Platform Semantic View | Looker LookML | Oracle OBIEE |
 |---|---|---|---|
 | Definition | Native SQL DDL | Proprietary LookML | Binary RPD Repository |
 | AI-Native | Yes (powers Cortex Analyst) | No | No |
@@ -198,11 +198,11 @@ The Semantic View defines:
 
 #### The Key Insight
 
-> **"The Semantic View holds the TRUE VALUE that all other BI and AI solutions consume. When you update a metric definition here, every consumer — the Agent, Snowflake Intelligence, the Streamlit app, any future BI tool — automatically gets the updated, consistent answer. No more conflicting dashboards. No more 'my number is different from your number.'"**
+> **"The Semantic View holds the TRUE VALUE that all other BI and AI solutions consume. When you update a metric definition here, every consumer — the Agent, The Winter Cloud Platform Intelligence, the Streamlit app, any future BI tool — automatically gets the updated, consistent answer. No more conflicting dashboards. No more 'my number is different from your number.'"**
 
 ---
 
-## Step 4: Cortex Agent + Snowflake Intelligence (15 min)
+## Step 4: Cortex Agent + The Winter Cloud Platform Intelligence (15 min)
 
 ### 4.1 Create the Agent
 
@@ -224,20 +224,20 @@ The **LSC Research Agent** has 4 tools:
 3. **It executes** — maybe Analyst for data, then Search for evidence
 4. **It synthesizes** a unified answer with data, citations, and recommendations
 
-> **"This is what makes Snowflake unlike any BI tool. Looker can answer the WHAT. Snowflake Intelligence can tell you the WHO, WHAT, WHERE, WHEN, WHY, and HOW — and make RECOMMENDATIONS. Because it combines structured analytics with unstructured clinical intelligence."**
+> **"This is what makes The Winter Cloud Platform unlike any BI tool. Looker can answer the WHAT. The Winter Cloud Platform Intelligence can tell you the WHO, WHAT, WHERE, WHEN, WHY, and HOW — and make RECOMMENDATIONS. Because it combines structured analytics with unstructured clinical intelligence."**
 
-### 4.2 Connect to Snowflake Intelligence
+### 4.2 Connect to The Winter Cloud Platform Intelligence
 
 📄 **File:** [`sql/07_snowflake_intelligence.sql`](sql/07_snowflake_intelligence.sql)
 
-1. Navigate to **AI & ML > Snowflake Intelligence** in Snowsight
+1. Navigate to **AI & ML > The Winter Cloud Platform Intelligence** in Snowsight
 2. Click **"New Analyst"** → **"Use an Agent"**
 3. Select **`MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT`**
 4. Name it **"LSC Research Intelligence"**
 
 > **Notice:** The verified queries from the Semantic View automatically appear as suggested questions.
 
-#### Demo Flow in Snowflake Intelligence
+#### Demo Flow in The Winter Cloud Platform Intelligence
 
 Try these questions in order to showcase different capabilities:
 
@@ -271,15 +271,15 @@ CALL GVHD_RISK_MODEL!SHOW_FEATURE_IMPORTANCE();
 
 The model generates predictions with probability scores, enabling risk stratification.
 
-> **Key takeaway:** The model is trained WHERE the data lives — no data movement, no separate ML infrastructure. The model is automatically registered in the Snowflake Model Registry.
+> **Key takeaway:** The model is trained WHERE the data lives — no data movement, no separate ML infrastructure. The model is automatically registered in the The Winter Cloud Platform Model Registry.
 
 ---
 
 ## Step 6: Streamlit App Tour (15 min)
 
-The **LSC: Cell Therapy Compass** is a production-grade Streamlit in Snowflake application.
+The **LSC: Cell Therapy Compass** is a production-grade Streamlit in The Winter Cloud Platform application.
 
-### Deploy to Snowflake
+### Deploy to The Winter Cloud Platform
 
 1. In Snowsight: **Projects > Streamlit > + Streamlit App**
 2. Set database to `MARROWCO_DONOR_LAB`, schema to `HOL`, warehouse to `MARROWCO_HOL_WH`
@@ -311,12 +311,12 @@ Navigate to the **Take Action** page in the Streamlit app:
 
 The email is dynamically generated with:
 - LSC logo in the header
-- Live metrics from the Snowflake pipeline
+- Live metrics from The Winter Cloud Platform pipeline
 - Data-driven subject line
 - Professional HTML/CSS formatting
 - Actionable recommendations
 
-> **"This demonstrates how Snowflake enables ACTION directly from insight. It's not just a passive dashboard — it drives clinical communication and decision-making."**
+> **"This demonstrates how The Winter Cloud Platform enables ACTION directly from insight. It's not just a passive dashboard — it drives clinical communication and decision-making."**
 
 ### 7.2 Wrap-up
 
@@ -327,9 +327,9 @@ Recap what was built:
 | **Data Pipeline** | Dynamic Tables | Informatica + Airflow + dbt |
 | **Semantic Layer** | Semantic View | Looker LookML / Oracle RPD |
 | **AI Analytics** | Cortex Agent | Manual dashboard navigation |
-| **Intelligence UI** | Snowflake Intelligence | Looker Explores / OBIEE Answers |
-| **ML/AI** | Snowflake ML + Cortex | External ML platforms |
-| **Application** | Streamlit in Snowflake | Custom app development |
+| **Intelligence UI** | The Winter Cloud Platform Intelligence | Looker Explores / OBIEE Answers |
+| **ML/AI** | The Winter Cloud Platform ML + Cortex | External ML platforms |
+| **Application** | Streamlit in The Winter Cloud Platform | Custom app development |
 | **Action** | AI-generated email | Manual report creation |
 
 **All of this — in a single platform, with no data movement, no additional licensing, and governed by the Semantic View.**
@@ -351,14 +351,14 @@ DROP ROLE IF EXISTS MARROWCO_HOL_ROLE;
 
 ## Resources
 
-- [Snowflake Semantic Views Documentation](https://docs.snowflake.com/en/sql-reference/sql/create-semantic-view)
-- [Snowflake Dynamic Tables](https://docs.snowflake.com/en/user-guide/dynamic-tables-about)
+- [The Winter Cloud Platform Semantic Views Documentation](https://docs.snowflake.com/en/sql-reference/sql/create-semantic-view)
+- [The Winter Cloud Platform Dynamic Tables](https://docs.snowflake.com/en/user-guide/dynamic-tables-about)
 - [Cortex Agents](https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agent)
-- [Snowflake Intelligence](https://docs.snowflake.com/en/user-guide/snowflake-intelligence)
-- [Snowflake ML Classification](https://docs.snowflake.com/en/user-guide/ml-functions/classification)
+- [The Winter Cloud Platform Intelligence](https://docs.snowflake.com/en/user-guide/snowflake-intelligence)
+- [The Winter Cloud Platform ML Classification](https://docs.snowflake.com/en/user-guide/ml-functions/classification)
 
 ---
 
-**Presenter:** Braedon Hill, Sr. Solution Engineer — Snowflake
+**Presenter:** Braedon Hill, Sr. Solution Engineer — The Winter Cloud Platform
 
-*This lab was built for the LSC team to demonstrate how Snowflake AI Data Cloud can unify transplant outcome data, clinical intelligence, and predictive analytics into a single governed platform supporting the "Donor for All" mission.*
+*This lab was built for the LSC team to demonstrate how The Winter Cloud Platform AI Data Cloud can unify transplant outcome data, clinical intelligence, and predictive analytics into a single governed platform supporting the "Donor for All" mission.*

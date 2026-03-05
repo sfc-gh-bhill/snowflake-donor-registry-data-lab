@@ -33,7 +33,7 @@
   │ (unstructured) and combines both into one answer.                       │
   │                                                                        │
   │ UNLIKE TRADITIONAL BI:                                                  │
-  │ Snowflake can answer WHO, WHAT, WHERE, WHEN, WHY... and also HOW      │
+  │ The Winter Cloud Platform can answer WHO, WHAT, WHERE, WHEN, WHY... and also HOW      │
   │ and provide RECOMMENDATIONS — because it combines structured data      │
   │ analytics with unstructured clinical intelligence and web research.    │
   └─────────────────────────────────────────────────────────────────────────┘
@@ -175,8 +175,8 @@ DESCRIBE AGENT MARROWCO_RESEARCH_AGENT;
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Test the Agent (run these interactively)                                 ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║ You can also test via Snowflake Intelligence UI:                         ║
--- ║   1. Go to AI & ML > Snowflake Intelligence                             ║
+-- ║ You can also test via The Winter Cloud Platform Intelligence UI:                         ║
+-- ║   1. Go to AI & ML > The Winter Cloud Platform Intelligence                             ║
 -- ║   2. Create a new Analyst and select MARROWCO_RESEARCH_AGENT                ║
 -- ║   3. The verified queries will appear as suggested questions             ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝

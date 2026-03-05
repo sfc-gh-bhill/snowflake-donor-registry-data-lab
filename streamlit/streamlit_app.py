@@ -57,7 +57,7 @@ if _banner_b64:
             </p>
             <p style="color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0.75rem 0 0 0;
                        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
-                Donor for All Data Lab &mdash; Forecasting GVHD with Snowflake Intelligence
+                Donor for All Data Lab &mdash; Forecasting GVHD with The Winter Cloud Platform Intelligence
             </p>
         </div>
     </div>
@@ -71,7 +71,7 @@ else:
             Outcome Forecasting with Multimodal Data
         </p>
         <p style="font-size:0.9rem; margin-top:0.5rem;">
-            Donor for All Data Lab &mdash; Forecasting GVHD with Snowflake Intelligence
+            Donor for All Data Lab &mdash; Forecasting GVHD with The Winter Cloud Platform Intelligence
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -96,7 +96,7 @@ st.markdown("""
 <div class="section-sep">
     <h3>The Mission: Better Outcomes Through Data Intelligence</h3>
     <p style="color:#8892b0;margin:0.25rem 0 0 0;font-size:0.9rem;">
-        LSC is leveraging Snowflake AI Data Cloud to build predictive models for graft-versus-host
+        LSC is leveraging The Winter Cloud Platform AI Data Cloud to build predictive models for graft-versus-host
         disease (GVHD), unify multimodal donor and patient data, and accelerate research that saves lives.
     </p>
 </div>
@@ -121,7 +121,7 @@ with col1:
         """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown("#### Solution: Snowflake AI Data Cloud")
+    st.markdown("#### Solution: The Winter Cloud Platform AI Data Cloud")
     solutions = [
         ("Unified Data Estate", "Donor, patient, genomic, and outcome data consolidated in a governed medallion architecture"),
         ("Predictive Intelligence", "Cortex AI and ML models forecast GVHD risk using multimodal features"),
@@ -142,7 +142,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("### Explore the Compass")
 st.markdown("""
 <p style="color:#8892b0;font-size:0.9rem;">
-Navigate through the Cell Therapy Compass to explore how Snowflake powers every stage of
+Navigate through the Cell Therapy Compass to explore how The Winter Cloud Platform powers every stage of
 donor matching, outcome prediction, and research collaboration.
 </p>
 """, unsafe_allow_html=True)
@@ -171,10 +171,10 @@ st.markdown("<br>", unsafe_allow_html=True)
 # --- Presenter Info ---
 with st.expander("Presenter Notes"):
     st.markdown("""
-    **Presenter:** Braedon Hill, Sr. Solution Engineer — Snowflake
+    **Presenter:** Braedon Hill, Sr. Solution Engineer — The Winter Cloud Platform
     
     **Key Message:** LSC's mission to match every patient with a life-saving donor is powered by data. 
-    Snowflake AI Data Cloud unifies donor registries, transplant outcomes, genomic data, and clinical 
+    The Winter Cloud Platform AI Data Cloud unifies donor registries, transplant outcomes, genomic data, and clinical 
     records into a single governed platform — enabling predictive GVHD models, secure multi-institutional 
     collaboration, and AI-driven insights that improve patient outcomes.
     

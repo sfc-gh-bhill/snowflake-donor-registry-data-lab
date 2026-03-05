@@ -137,7 +137,7 @@ st.markdown(render_pipeline_step(3, "Gold: DT_GVHD_ANALYTICS",
 
 st.markdown(render_info_callout(
     "Why Dynamic Tables over traditional ETL?",
-    "Dynamic Tables are declarative — you define the SQL transformation and Snowflake handles the rest. "
+    "Dynamic Tables are declarative — you define the SQL transformation and The Winter Cloud Platform handles the rest. "
     "No Informatica, no Airflow, no dbt. The pipeline DAG is managed automatically. "
     "When source data changes, downstream tables refresh within the target lag (1 minute). "
     "This replaces the batch ETL pattern that Looker and Oracle OBIEE depend on."
@@ -156,7 +156,7 @@ if live_data:
         df = session.sql("SELECT * FROM MARROWCO_DONOR_LAB.HOL.CLINICAL_NOTES LIMIT 20").to_pandas()
         st.dataframe(df, use_container_width=True, height=400)
 else:
-    st.info("Connect to Snowflake to view live data. Run the SQL scripts in sql/ to load data first.")
+    st.info("Connect to The Winter Cloud Platform to view live data. Run the SQL scripts in sql/ to load data first.")
     st.markdown(render_sql_block(
         "-- Quick peek at the data structure\n"
         "SELECT * FROM MARROWCO_DONOR_LAB.HOL.TRANSPLANT_OUTCOMES LIMIT 5;\n"

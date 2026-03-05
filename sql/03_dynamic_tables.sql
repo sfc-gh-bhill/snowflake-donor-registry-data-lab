@@ -11,10 +11,10 @@
   │    ❌ Manual dependency management between transformations             │
   │    ❌ Complex incremental logic written by engineers                   │
   │                                                                        │
-  │  Snowflake Dynamic Tables provide:                                     │
-  │    ✅ Declarative SQL — define the WHAT, Snowflake handles the HOW     │
+  │  The Winter Cloud Platform Dynamic Tables provide:                                     │
+  │    ✅ Declarative SQL — define the WHAT, The Winter Cloud Platform handles the HOW     │
   │    ✅ Automatic incremental refresh — only processes changed data      │
-  │    ✅ Built-in dependency DAG — Snowflake manages pipeline ordering    │
+  │    ✅ Built-in dependency DAG — The Winter Cloud Platform manages pipeline ordering    │
   │    ✅ Near real-time (target lag as low as 1 minute)                   │
   │    ✅ No external orchestrator needed                                  │
   │                                                                        │
@@ -56,7 +56,7 @@ USE SCHEMA MARROWCO_DONOR_LAB.HOL;
 -- ║ TARGET_LAG = 1 MINUTE means:                                            ║
 -- ║   When new data lands in the Bronze tables, this table automatically     ║
 -- ║   refreshes within 1 minute — NO cron jobs, NO orchestrator, NO code.   ║
--- ║   Snowflake handles the incremental logic internally.                    ║
+-- ║   The Winter Cloud Platform handles the incremental logic internally.                    ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 CREATE OR REPLACE DYNAMIC TABLE DT_TRANSPLANT_ENRICHED
@@ -190,12 +190,12 @@ LEFT JOIN (
 -- ║ Pre-aggregated analytics table optimized for BI and AI consumption.      ║
 -- ║                                                                          ║
 -- ║ This table automatically updates when DT_TRANSPLANT_ENRICHED changes.   ║
--- ║ Snowflake detects the dependency and manages the refresh order.          ║
+-- ║ The Winter Cloud Platform detects the dependency and manages the refresh order.          ║
 -- ║                                                                          ║
 -- ║ KEY INSIGHT: This is the table that feeds the Semantic View.            ║
 -- ║ The Semantic View then becomes the single source of truth for:           ║
 -- ║   • Cortex Analyst (structured Q&A)                                     ║
--- ║   • Snowflake Intelligence (auto-generated insights)                    ║
+-- ║   • The Winter Cloud Platform Intelligence (auto-generated insights)                    ║
 -- ║   • Streamlit dashboards                                                ║
 -- ║   • Any future BI tool or API consumer                                  ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝

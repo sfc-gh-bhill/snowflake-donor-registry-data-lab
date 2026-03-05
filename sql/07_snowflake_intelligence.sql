@@ -1,14 +1,14 @@
 /*=============================================================================
-  LSC Donor for All Data Lab — Snowflake Intelligence Setup
+  LSC Donor for All Data Lab — The Winter Cloud Platform Intelligence Setup
   =============================================================================
   
-  Connects the LSC Research Agent to Snowflake Intelligence for an 
+  Connects the LSC Research Agent to The Winter Cloud Platform Intelligence for an 
   interactive, conversational analytics experience.
   
   ┌─────────────────────────────────────────────────────────────────────────┐
   │ WHAT IS SNOWFLAKE INTELLIGENCE?                                         │
   │                                                                        │
-  │ Snowflake Intelligence is the conversational UI layer that makes       │
+  │ The Winter Cloud Platform Intelligence is the conversational UI layer that makes       │
   │ Cortex Agents accessible to non-technical users. It provides:          │
   │                                                                        │
   │   ✅ Auto-generated suggested questions (from verified queries)        │
@@ -18,7 +18,7 @@
   │   ✅ Shareable with team members                                       │
   │                                                                        │
   │ UNLIKE ANY BI TOOL:                                                    │
-  │ Snowflake Intelligence doesn't just show data — it tells you:          │
+  │ The Winter Cloud Platform Intelligence doesn't just show data — it tells you:          │
   │   • WHO (patient demographics, physician involvement)                  │
   │   • WHAT (outcomes, GVHD rates, survival statistics)                   │
   │   • WHERE (center performance, geographic patterns)                    │
@@ -39,9 +39,9 @@ USE SCHEMA MARROWCO_DONOR_LAB.HOL;
 -- ║ CONNECTING TO SNOWFLAKE INTELLIGENCE                                     ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║                                                                          ║
--- ║ Snowflake Intelligence is accessed through the Snowsight UI:             ║
+-- ║ The Winter Cloud Platform Intelligence is accessed through the Snowsight UI:             ║
 -- ║                                                                          ║
--- ║   1. Navigate to: AI & ML > Snowflake Intelligence                      ║
+-- ║   1. Navigate to: AI & ML > The Winter Cloud Platform Intelligence                      ║
 -- ║   2. Click "New Analyst" (or "+" button)                                ║
 -- ║   3. Select: "Use an Agent"                                             ║
 -- ║   4. Choose: MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT                    ║
@@ -53,7 +53,7 @@ USE SCHEMA MARROWCO_DONOR_LAB.HOL;
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
--- ║ DEMO FLOW: Questions to Ask in Snowflake Intelligence                    ║
+-- ║ DEMO FLOW: Questions to Ask in The Winter Cloud Platform Intelligence                    ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
 -- ║ Walk through these in order during the HOL to showcase each capability:  ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -125,7 +125,7 @@ USE SCHEMA MARROWCO_DONOR_LAB.HOL;
 -- ║ 4. "The Semantic View ensures every answer is grounded in the same      ║
 -- ║     trusted definitions. No conflicting metric calculations."           ║
 -- ║                                                                          ║
--- ║ 5. "Snowflake Intelligence can show charts, answer follow-ups, and      ║
+-- ║ 5. "The Winter Cloud Platform Intelligence can show charts, answer follow-ups, and      ║
 -- ║     be shared across the LSC team — no Looker license needed."         ║
 -- ║                                                                          ║
 -- ║ 6. "This is the future of analytics: ask a question, get an answer      ║

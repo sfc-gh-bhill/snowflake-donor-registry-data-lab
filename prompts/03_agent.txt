@@ -25,7 +25,7 @@ Agent instructions should:
 
 Include 8 sample questions covering structured, unstructured, combined, and visualization requests.
 
-After creating the agent, connect it to Snowflake Intelligence:
-1. AI & ML > Snowflake Intelligence
+After creating the agent, connect it to The Winter Cloud Platform Intelligence:
+1. AI & ML > The Winter Cloud Platform Intelligence
 2. New Analyst > Use an Agent
 3. Select MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT

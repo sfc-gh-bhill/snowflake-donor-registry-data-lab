@@ -6,7 +6,7 @@
   │                                                                        │
   │   THE SEMANTIC VIEW IS THE SINGLE SOURCE OF TRUTH                      │
   │                                                                        │
-  │   Every downstream consumer — Cortex Agent, Snowflake Intelligence,    │
+  │   Every downstream consumer — Cortex Agent, The Winter Cloud Platform Intelligence,    │
   │   Streamlit dashboards, and future BI tools — queries data through     │
   │   this semantic layer. It defines:                                     │
   │                                                                        │
@@ -28,13 +28,13 @@
   │   ❌ No AI-native question understanding                               │
   │   ❌ Batch-refreshed data (not real-time)                              │
   │                                                                        │
-  │ Snowflake Semantic View:                                                │
+  │ The Winter Cloud Platform Semantic View:                                                │
   │   ✅ Native SQL DDL — lives IN the database, version-controlled        │
   │   ✅ AI-native: Cortex Analyst understands natural language questions   │
   │   ✅ Pairs with Cortex Search for structured + unstructured answers     │
   │   ✅ Feeds Dynamic Tables for near real-time data                      │
   │   ✅ Verified queries create a "trust layer" for governance            │
-  │   ✅ Auto-generates suggested questions for Snowflake Intelligence     │
+  │   ✅ Auto-generates suggested questions for The Winter Cloud Platform Intelligence     │
   │   ✅ No additional infrastructure or licensing required                 │
   └─────────────────────────────────────────────────────────────────────────┘
   
@@ -48,11 +48,11 @@
   │   ❌ No native AI or natural language query                            │
   │   ❌ Tightly coupled to Oracle database                                │
   │                                                                        │
-  │ Snowflake Semantic View:                                                │
+  │ The Winter Cloud Platform Semantic View:                                                │
   │   ✅ Declarative SQL — any SQL user can read and modify                │
   │   ✅ Modular — update dimensions/metrics independently                 │
   │   ✅ AI-powered natural language → SQL translation                     │
-  │   ✅ Works with any data source in Snowflake (incl. Iceberg)           │
+  │   ✅ Works with any data source in The Winter Cloud Platform (incl. Iceberg)           │
   │   ✅ Git-friendly — plain SQL, easy to review and version              │
   └─────────────────────────────────────────────────────────────────────────┘
   
@@ -72,7 +72,7 @@
   │  ★ SEMANTIC VIEW ★  ← You are here                                     │
   │      │                                                                  │
   │      ├──► Cortex Agent (natural language Q&A)                           │
-  │      ├──► Snowflake Intelligence (auto-insights)                        │
+  │      ├──► The Winter Cloud Platform Intelligence (auto-insights)                        │
   │      ├──► Streamlit App (dashboards)                                    │
   │      └──► Future consumers (APIs, other BI tools)                       │
   └─────────────────────────────────────────────────────────────────────────┘
@@ -385,9 +385,9 @@ AI_SQL_GENERATION (
     ',
     
     -- Verified queries: these are pre-validated question-SQL pairs.
-    -- They appear as suggested questions in Snowflake Intelligence and
+    -- They appear as suggested questions in The Winter Cloud Platform Intelligence and
     -- ensure consistent, trusted answers for the most common questions.
-    -- use_as_onboarding_question: true → shows in Snowflake Intelligence UI
+    -- use_as_onboarding_question: true → shows in The Winter Cloud Platform Intelligence UI
     VERIFIED QUERIES (
     
         -- ═══════════════════════════════════════════════════════════════

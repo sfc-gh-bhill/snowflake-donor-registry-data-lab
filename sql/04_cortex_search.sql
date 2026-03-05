@@ -40,7 +40,7 @@ USE SCHEMA MARROWCO_DONOR_LAB.HOL;
 -- ║ • SEARCH_COLUMN: NOTE_TEXT — the main text field to search              ║
 -- ║ • ATTRIBUTES: metadata columns available for filtering & display        ║
 -- ║ • TARGET_LAG: auto-refresh when source data changes (like Dynamic Tables)║
--- ║ • EMBEDDING_MODEL: Snowflake's built-in embedding for vector search     ║
+-- ║ • EMBEDDING_MODEL: The Winter Cloud Platform's built-in embedding for vector search     ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 CREATE OR REPLACE CORTEX SEARCH SERVICE CLINICAL_NOTES_SEARCH

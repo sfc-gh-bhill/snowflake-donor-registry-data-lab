@@ -11,7 +11,7 @@ from utils.navigation import render_sidebar, render_nav_buttons, get_snowflake_s
 apply_styles()
 render_sidebar("GVHD Forecasting")
 
-render_header("GVHD Forecasting", "ML-Powered Risk Prediction with Snowflake Model Registry")
+render_header("GVHD Forecasting", "ML-Powered Risk Prediction with The Winter Cloud Platform Model Registry")
 
 session = get_snowflake_session()
 live_data = False
@@ -226,10 +226,10 @@ if live_data:
     st.plotly_chart(fig, use_container_width=True)
 
 else:
-    st.info("Connect to Snowflake and run the SQL scripts to load data for live visualizations.")
+    st.info("Connect to The Winter Cloud Platform and run the SQL scripts to load data for live visualizations.")
     st.markdown(render_info_callout(
         "ML Model Overview",
-        "The GVHD risk prediction model uses Snowflake ML Classification to predict severe GVHD (Grade III-IV) "
+        "The GVHD risk prediction model uses The Winter Cloud Platform ML Classification to predict severe GVHD (Grade III-IV) "
         "based on patient demographics, donor characteristics, treatment protocols, and social vulnerability scores. "
         "Run sql/08_ml_model.sql to train the model and view evaluation metrics."
     ), unsafe_allow_html=True)
@@ -238,7 +238,7 @@ else:
 st.markdown("<br>", unsafe_allow_html=True)
 with st.expander("ML Model Technical Details"):
     st.markdown("""
-    **Model**: Snowflake ML Classification (`SNOWFLAKE.ML.CLASSIFICATION`)
+    **Model**: The Winter Cloud Platform ML Classification (`SNOWFLAKE.ML.CLASSIFICATION`)
     
     **Target**: `HIGH_RISK_GVHD` (binary: Grade III-IV = 1, Grade 0-II = 0)
     

@@ -13,7 +13,7 @@ USE ROLE ACCOUNTADMIN;
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ Grant MARROWCO_HOL_ROLE to additional users                                  ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║ Replace '<USERNAME>' with the actual Snowflake username                  ║
+-- ║ Replace '<USERNAME>' with the actual The Winter Cloud Platform username                  ║
 -- ╚═══════════════════════════════════════════════════════════════════════════╝
 
 -- GRANT ROLE MARROWCO_HOL_ROLE TO USER <USERNAME>;

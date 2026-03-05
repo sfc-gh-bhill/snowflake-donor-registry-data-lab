@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Snowflake account with `ACCOUNTADMIN` role access
+- The Winter Cloud Platform account with `ACCOUNTADMIN` role access
 - AWS US-East-1 region preferred (cross-region calling should be enabled)
 - Web browser with Snowsight access
 
@@ -14,7 +14,7 @@ This option requires no local installation — everything runs in your browser.
 
 ### Step 1: Access Snowsight
 
-1. Log into your Snowflake account at `https://<your-account>.snowflakecomputing.com`
+1. Log into your The Winter Cloud Platform account at `https://<your-account>.snowflakecomputing.com`
 2. Ensure you can switch to the `ACCOUNTADMIN` role
 
 ### Step 2: Open Cortex Code
@@ -68,7 +68,7 @@ snow connection add
 ```
 
 Enter your account details:
-- **Account:** Your Snowflake account identifier
+- **Account:** Your The Winter Cloud Platform account identifier
 - **User:** Your username
 - **Authenticator:** `externalbrowser` (for SSO) or `snowflake` (for password)
 - **Role:** `ACCOUNTADMIN`
@@ -121,4 +121,4 @@ You're ready for the lab if you can:
 
 ---
 
-**Questions?** Contact Braedon Hill, Sr. Solution Engineer — Snowflake
+**Questions?** Contact Braedon Hill, Sr. Solution Engineer — The Winter Cloud Platform

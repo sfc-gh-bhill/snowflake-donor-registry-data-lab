@@ -147,19 +147,19 @@ if user_input and session:
 
 elif user_input and not session:
     with st.chat_message("assistant"):
-        msg = ("I'm not connected to Snowflake right now. To use the Research Agent:\n\n"
+        msg = ("I'm not connected to The Winter Cloud Platform right now. To use the Research Agent:\n\n"
                "1. Run the SQL scripts in order (00-06)\n"
-               "2. Connect this app to your Snowflake account\n"
+               "2. Connect this app to your The Winter Cloud Platform account\n"
                "3. The agent will be available for natural language questions\n\n"
-               "**Tip:** You can also test the agent in Snowflake Intelligence (AI & ML > Snowflake Intelligence).")
+               "**Tip:** You can also test the agent in The Winter Cloud Platform Intelligence (AI & ML > The Winter Cloud Platform Intelligence).")
         st.markdown(msg)
         st.session_state.agent_messages.append({"role": "assistant", "content": msg})
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ── Snowflake Intelligence Link ──
+# ── The Winter Cloud Platform Intelligence Link ──
 st.markdown(render_section_separator(
-    "Snowflake Intelligence",
+    "The Winter Cloud Platform Intelligence",
     "The full agent experience with auto-suggested questions, charts, and conversation history"
 ), unsafe_allow_html=True)
 
@@ -167,16 +167,16 @@ st.markdown("""
 <div style="background: linear-gradient(145deg, #1a1f35 0%, #0d1117 100%); border-radius: 16px;
             padding: 1.5rem 2rem; border: 1px solid rgba(41,181,232,0.3); margin: 1rem 0;">
     <p style="color: #FAFAFA; font-size: 0.95rem; line-height: 1.6;">
-        For the full agent experience, use <strong style="color: #29B5E8;">Snowflake Intelligence</strong>:
+        For the full agent experience, use <strong style="color: #29B5E8;">The Winter Cloud Platform Intelligence</strong>:
     </p>
     <ol style="color: #8892b0; font-size: 0.85rem; line-height: 1.8; padding-left: 1.5rem;">
-        <li>Navigate to <strong>AI & ML > Snowflake Intelligence</strong> in Snowsight</li>
+        <li>Navigate to <strong>AI & ML > The Winter Cloud Platform Intelligence</strong> in Snowsight</li>
         <li>Click <strong>"New Analyst"</strong> and select <strong>"Use an Agent"</strong></li>
         <li>Choose <strong>MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT</strong></li>
         <li>Verified queries appear as suggested questions automatically</li>
     </ol>
     <p style="color: #00D4AA; font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600;">
-        Snowflake Intelligence shows the WHO, WHAT, WHERE, WHEN, WHY, and HOW — 
+        The Winter Cloud Platform Intelligence shows the WHO, WHAT, WHERE, WHEN, WHY, and HOW — 
         plus actionable recommendations. No other BI tool does this.
     </p>
 </div>

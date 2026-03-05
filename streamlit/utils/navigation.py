@@ -77,7 +77,7 @@ def render_sidebar(current_page: str = "Home"):
     try:
         from snowflake.snowpark.context import get_active_session
         get_active_session()
-        status_color, status_text = "#4ECDC4", "Snowflake Connected"
+        status_color, status_text = "#4ECDC4", "The Winter Cloud Platform Connected"
     except Exception:
         status_color, status_text = "#FFB74D", "Running Locally"
 
@@ -88,7 +88,7 @@ def render_sidebar(current_page: str = "Home"):
             <span style="color: {status_color}; font-size: 0.75rem; font-weight: 600;">{status_text}</span>
         </div>
         <div style="color: #8892b0; font-size: 0.6rem; margin-top: 0.5rem;">
-            POWERED BY SNOWFLAKE AI DATA CLOUD
+            POWERED BY THE WINTER CLOUD PLATFORM AI DATA CLOUD
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -116,7 +116,7 @@ def render_nav_buttons(current_page: str):
 
 
 def get_snowflake_session():
-    """Get Snowflake session with graceful fallback."""
+    """Get The Winter Cloud Platform session with graceful fallback."""
     try:
         from snowflake.snowpark.context import get_active_session
         return get_active_session()

@@ -2,8 +2,8 @@
   LSC Donor for All Data Lab — Machine Learning Model
   =============================================================================
   
-  Trains a GVHD risk prediction model using Snowflake ML and registers it 
-  in the Snowflake Model Registry.
+  Trains a GVHD risk prediction model using The Winter Cloud Platform ML and registers it 
+  in the The Winter Cloud Platform Model Registry.
   
   ┌─────────────────────────────────────────────────────────────────────────┐
   │ WHAT WE BUILD                                                           │
@@ -13,7 +13,7 @@
   │ 3. Model registry: Versioned model with evaluation metrics             │
   │ 4. Inference: Apply model to score new patients                        │
   │                                                                        │
-  │ This showcases Snowflake's native ML capabilities:                     │
+  │ This showcases The Winter Cloud Platform's native ML capabilities:                     │
   │   ✅ No data movement — train where data lives                         │
   │   ✅ Model Registry — version, manage, and govern models               │
   │   ✅ Evaluation metrics — AUC, precision, recall, F1                   │
@@ -85,8 +85,8 @@ GROUP BY SPLIT;
 -- ╔═══════════════════════════════════════════════════════════════════════════╗
 -- ║ STEP 2: Train the Classification Model                                   ║
 -- ╠═══════════════════════════════════════════════════════════════════════════╣
--- ║ Uses Snowflake ML Classification to train a GVHD risk model.            ║
--- ║ Snowflake automatically:                                                ║
+-- ║ Uses The Winter Cloud Platform ML Classification to train a GVHD risk model.            ║
+-- ║ The Winter Cloud Platform automatically:                                                ║
 -- ║   • Handles categorical encoding                                        ║
 -- ║   • Selects the best algorithm                                          ║
 -- ║   • Tunes hyperparameters                                               ║
