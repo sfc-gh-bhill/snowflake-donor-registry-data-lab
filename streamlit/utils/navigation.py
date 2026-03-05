@@ -7,13 +7,15 @@ from utils.styles import MARROWCO_LOGO_BYTES
 # Page registry: (file_path, display_label, tooltip)
 PAGE_SECTIONS = {
     "Data Foundation": [
-        # ("pages/01_Data_Overview.py", "Data Overview", "Donor and patient data landscape"),
+        ("pages/01_Data_Foundation.py", "Data Foundation", "Bronze → Silver → Gold pipeline with Dynamic Tables"),
+        ("pages/02_Semantic_Intelligence.py", "Semantic Intelligence", "Semantic View — the single source of truth"),
     ],
     "Outcome Forecasting": [
-        # ("pages/02_GVHD_Forecasting.py", "GVHD Forecasting", "Predict graft-vs-host disease outcomes"),
+        ("pages/03_GVHD_Forecasting.py", "GVHD Forecasting", "ML-powered risk prediction and outcome analytics"),
     ],
     "Intelligence & AI": [
-        # ("pages/03_Cortex_Analytics.py", "Cortex Analytics", "AI-powered donor matching insights"),
+        ("pages/04_Research_Agent.py", "Research Agent", "AI agent with structured + unstructured intelligence"),
+        ("pages/05_Take_Action.py", "Take Action", "Generate AI-powered clinical communications"),
     ],
 }
 

@@ -1,0 +1,36 @@
+Build a comprehensive Semantic View for the LSC transplant outcome data.
+
+The Semantic View should be the SINGLE SOURCE OF TRUTH for all analytics and AI consumption.
+
+Requirements:
+
+1. TABLES: Include DT_TRANSPLANT_ENRICHED (Silver, patient-level) and DT_GVHD_ANALYTICS (Gold, aggregated)
+
+2. COLUMNS: Map all columns with detailed comments and synonyms. Categorize as dimensions (categorical) or facts (numeric).
+
+3. METRICS: Define at least 10 business metrics including:
+   - Total transplant count
+   - Overall GVHD rate (Grade II+)
+   - Severe GVHD rate (Grade III-IV)
+   - 1-year overall survival rate
+   - Average survival days
+   - Average engraftment time
+   - Average risk score
+   - Relapse rate
+   - Average SVI score
+
+4. VERIFIED QUERIES: Create 8 trusted question-SQL pairs with use_as_onboarding_question=true:
+   - GVHD rate by donor type
+   - MUD vs MMUD survival comparison
+   - Transplant center performance
+   - Risk factors for severe GVHD
+   - Monthly volume trends
+   - Race/ethnicity outcomes (Donor for All)
+   - PTCy impact on haploidentical
+   - Social vulnerability analysis
+
+5. AI_SQL_GENERATION: Include clinical context instructions for Cortex Analyst
+
+6. AI_QUESTION_CATEGORIZATION: Define what questions to answer and decline
+
+Emphasize how this differs from Looker LookML and Oracle OBIEE in comments.

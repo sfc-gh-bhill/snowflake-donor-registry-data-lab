@@ -3,3 +3,5 @@ channels:
   - snowflake
 dependencies:
   - streamlit
+  - plotly
+  - snowflake-snowpark-python

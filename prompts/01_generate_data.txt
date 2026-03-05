@@ -1,0 +1,26 @@
+Using the LSC Research Pack as context, generate realistic synthetic data for a transplant outcome analytics lab.
+
+Create two datasets:
+
+1. TRANSPLANT_OUTCOMES (500 rows) with columns:
+   - TRANSPLANT_ID, PATIENT_ID, PATIENT_AGE, PATIENT_SEX, PATIENT_RACE_ETHNICITY
+   - DIAGNOSIS, DIAGNOSIS_CATEGORY, DISEASE_STAGE
+   - DONOR_TYPE (MUD_8_8, MMUD_7_8, HAPLO, CORD), HLA_MATCH_SCORE, DONOR_AGE, DONOR_SEX
+   - CONDITIONING_REGIMEN, GVHD_PROPHYLAXIS
+   - TRANSPLANT_DATE, TRANSPLANT_CENTER_ID, CENTER_REGION, CENTER_STATE
+   - TIME_TO_ENGRAFTMENT_DAYS, ACUTE_GVHD_GRADE (0-4), CHRONIC_GVHD
+   - RELAPSE_FLAG, SURVIVAL_DAYS, SURVIVAL_STATUS
+   - GVHD_RISK_SCORE (0-1), PATIENT_ZIP_3DIGIT, SVI_SCORE (0-1)
+
+2. CLINICAL_NOTES (800 rows) with columns:
+   - NOTE_ID, TRANSPLANT_ID (FK), NOTE_DATE, NOTE_TYPE, PHYSICIAN_ID, NOTE_TEXT
+
+Requirements:
+- Donor type distribution: MUD ~35%, MMUD ~25%, HAPLO ~30%, CORD ~10%
+- Diverse patient demographics (reflecting "Donor for All" initiative)
+- Realistic GVHD rates by donor type (from published National Transplant Registry data)
+- Clinical notes should read like real physician narratives
+- SVI scores should correlate with race/ethnicity
+- Deterministic output (seed=42)
+
+Save as CSV files in the data/ directory.

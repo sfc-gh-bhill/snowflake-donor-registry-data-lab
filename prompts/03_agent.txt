@@ -1,0 +1,31 @@
+Create a Cortex Agent for the LSC Research Intelligence platform.
+
+The agent should have these tools:
+
+1. cortex_analyst_text_to_sql (named: transplant_analyst)
+   - Connected to the MARROWCO_TRANSPLANT_ANALYTICS semantic view
+   - For structured data queries about outcomes, demographics, trends
+
+2. cortex_search (named: clinical_notes_search)
+   - Connected to CLINICAL_NOTES_SEARCH service
+   - For unstructured physician note search
+
+3. data_to_chart (named: chart_generator)
+   - For generating visualizations from query results
+
+4. web_search (named: research_search)
+   - For searching latest GVHD research and clinical trials
+
+Agent instructions should:
+- Position as a clinical transplant outcomes research assistant
+- Support the "Donor for All" mission
+- Use both structured and unstructured data to answer complex questions
+- Provide actionable recommendations grounded in data
+- Understand clinical terminology (GVHD, HCT, MUD, MMUD, HAPLO, PTCy)
+
+Include 8 sample questions covering structured, unstructured, combined, and visualization requests.
+
+After creating the agent, connect it to Snowflake Intelligence:
+1. AI & ML > Snowflake Intelligence
+2. New Analyst > Use an Agent
+3. Select MARROWCO_DONOR_LAB.HOL.MARROWCO_RESEARCH_AGENT
