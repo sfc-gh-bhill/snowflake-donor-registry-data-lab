@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Braedon Hill
+
 #!/usr/bin/env python3
 """
 LSC Donor for All Data Lab — Synthetic Data Generator
