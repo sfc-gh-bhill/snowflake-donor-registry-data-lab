@@ -638,3 +638,16 @@ This project is the independent work of **Braedon Hill** and does not represent,
 **All data used in this project is entirely synthetic.** Synthetic datasets were generated using Snowflake's synthetic data generation capabilities (Cortex AI functions). Where real-world reference data was used for structure or schema design, it was obtained exclusively from publicly available sources. **No real patient data, proprietary datasets, or confidential information of any kind is included in this repository.**
 
 This project is provided "as is" without warranty of any kind, express or implied. The author assumes no liability for any use or misuse of the materials contained herein. This project is intended solely for educational and demonstration purposes.
+
+
+---
+
+## Disclaimer
+
+This project was created by Braedon Hill as a personal/educational/demonstration exercise.
+It is **not** official Snowflake documentation or software and is **not** reviewed,
+endorsed, or supported by Snowflake Inc.
+
+Provided "AS IS" — see [DISCLAIMER.md](./DISCLAIMER.md) for full details.
+
+![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
